@@ -5,9 +5,9 @@ Pluto for SG-t-SNE is a Pluto notebook that runs SG-t-SNE algorithm from Julia g
 ### Pluto-for-SG-t-SNE repository consists of 3 parts:
 
 ### sgtsnepi_mirror repository:
-This repository is a mirror of [SG-t-SNE repository](https://github.com/fcdimitr/sgtsnepi) Some modifications to the original repository have been made so as the points of every iteration are written and then read from the Pluto notebook. The Pluto notebook plots the points for all iterations of the algorithm.
+This repository is a mirror of [SG-t-SNE repository](https://github.com/fcdimitr/sgtsnepi). Some modifications to the original repository have been made so as the points of every iteration are written and then read from the Pluto notebook. The Pluto notebook plots the points for all iterations of the algorithm.
 
-### a Pluto notebook
+### a Pluto notebook:
 The Pluto notebook alg_execution.jl runs SG-t-SNE algorithm from Julia giving different cases of data as inputs and plots output points for all iterations of the algorithm.
 
 ### pluto data folder:

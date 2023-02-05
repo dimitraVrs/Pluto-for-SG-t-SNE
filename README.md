@@ -1,6 +1,6 @@
 # Pluto for SG-t-SNE
 
-Pluto for SG-t-SNE is a Pluto notebook that runs SG-t-SNE algorithm from Julia giving different cases of data as inputs. It is based on the webpage [How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/).
+Pluto for SG-t-SNE is a Pluto notebook that runs [SG-t-SNE algorithm](https://github.com/fcdimitr/sgtsnepi) from Julia giving different cases of data as inputs. It is based on the webpage [How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/).
 
 ### Pluto-for-SG-t-SNE repository consists of 3 parts:
 

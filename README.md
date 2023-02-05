@@ -20,11 +20,11 @@ Input data are created using MATLAB. Matlab files are also included in folder ma
 - [Julia](https://julialang.org/downloads/)
 - [Pluto.jl](https://github.com/fonsp/Pluto.jl)
 
-1. Clone Pluto-for-SG-t-SNE repository: `code` git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE
+1. Clone Pluto-for-SG-t-SNE repository: `git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE`
 2. Build SG-t-SNE according to the steps descrided in [SG-t-SNE repository](https://github.com/fcdimitr/sgtsnepi).
 3. From Julia REPL run:
-`code` import Pluto
-`code` Pluto.run()
+`import Pluto`
+`Pluto.run()`
 4. In section "Open a notebook" choose the notebook.
 
 ### Instructions to run the Pluto notebook using PlutoSliderServer
@@ -33,8 +33,8 @@ Input data are created using MATLAB. Matlab files are also included in folder ma
 - [Julia](https://julialang.org/downloads/)
 - [PlutoSliderServer.jl](https://github.com/JuliaPluto/PlutoSliderServer.jl)
 
-1. Clone Pluto-for-SG-t-SNE repository: `code` git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE
+1. Clone Pluto-for-SG-t-SNE repository: `git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE`
 2. Build SG-t-SNE according to the steps descrided in [SG-t-SNE repository](https://github.com/fcdimitr/sgtsnepi).
 3. From Julia REPL run:
-`code` using PlutoSliderServer
-`code` PlutoSliderServer.run_notebook(path_to_notebook,Export_offer_binder=false)
+`using PlutoSliderServer`
+`PlutoSliderServer.run_notebook(path_to_notebook,Export_offer_binder=false)` 

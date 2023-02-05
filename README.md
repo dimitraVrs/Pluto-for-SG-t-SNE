@@ -13,3 +13,28 @@ The Pluto notebook alg_execution.jl runs SG-t-SNE algorithm from Julia giving di
 ### pluto data folder:
 It contains input data. Output data as well as their plots' files are written here.
 Input data are created using MATLAB. Matlab files are also included in folder matlabScripts. The process of creation of the initial input points (before the sparse matrix creation) is based on the corresponding process of the webpage [How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/).
+
+### Instructions to run the Pluto notebook from Pluto
+
+#### Prerequisites
+- [Julia](https://julialang.org/downloads/)
+- [Pluto.jl](https://github.com/fonsp/Pluto.jl)
+
+1. Clone Pluto-for-SG-t-SNE repository: `code` git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE
+2. Build SG-t-SNE according to the steps descrided in [SG-t-SNE repository](https://github.com/fcdimitr/sgtsnepi).
+3. From Julia REPL run:
+`code` import Pluto
+`code` Pluto.run()
+4. In section "Open a notebook" choose the notebook.
+
+### Instructions to run the Pluto notebook using PlutoSliderServer
+
+#### Prerequisites
+- [Julia](https://julialang.org/downloads/)
+- [PlutoSliderServer.jl](https://github.com/JuliaPluto/PlutoSliderServer.jl)
+
+1. Clone Pluto-for-SG-t-SNE repository: `code` git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE
+2. Build SG-t-SNE according to the steps descrided in [SG-t-SNE repository](https://github.com/fcdimitr/sgtsnepi).
+3. From Julia REPL run:
+`code` using PlutoSliderServer
+`code` PlutoSliderServer.run_notebook(path_to_notebook,Export_offer_binder=false)

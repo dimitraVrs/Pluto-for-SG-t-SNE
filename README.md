@@ -22,7 +22,7 @@ Input data are created using MATLAB. Matlab files are also included in folder ma
 
 1. Clone Pluto-for-SG-t-SNE repository:<br>`git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE`
 2. Build SG-t-SNE according to the steps descrided in [SG-t-SNE repository](https://github.com/fcdimitr/sgtsnepi).
-3. From Julia REPL run:<br><br>
+3. From Julia REPL run:<br>
 `import Pluto`<br>
 `Pluto.run()`
 4. In section "Open a notebook" choose the notebook.

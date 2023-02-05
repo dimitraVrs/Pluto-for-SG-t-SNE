@@ -28,13 +28,13 @@ begin
 end
 
 # ╔═╡ c6373307-b528-4657-9825-b72cef998ae1
-notebookDir=@__DIR__()
+notebookDir=@__DIR__();
 
 # ╔═╡ 7060bcbf-32a8-44d0-b6b1-524251b6bfdc
 cd(string(notebookDir,"/pluto data"))
 
 # ╔═╡ 19946165-d0f9-44b0-85f2-97772e3d2b2e
-pwd()
+#pwd()
 
 # ╔═╡ e7ecb71d-ec3b-47c7-97dc-4c0d989b0500
 #cd("/home/dimitra/alg") #replace path with the directory of the algorithm
@@ -70,7 +70,7 @@ md" Select input data : "
 @bind dataChoice Select(["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","same pair distance","uniform","grid","two rings"])
 
 # ╔═╡ 61d87550-5be7-4fdb-89ed-b683ff29b0f6
-choices=["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","same pair distance","uniform","grid","two rings"]
+choices=["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","same pair distance","uniform","grid","two rings"];
 
 # ╔═╡ 0812ef32-ded7-4700-8ac6-251d1828c8ce
 #length(choices)
@@ -120,7 +120,7 @@ begin
 		sectionData="twoRings"
 	end
 	
-end
+	end;
 
 # ╔═╡ 4d57bc80-a9cf-4423-b879-655f245f6796
 #@bind sectionData Select(["sizeData","topData","distData","shapesData1","shapesData2","noiseData"])
@@ -139,9 +139,6 @@ md" Iterations : "
 
 # ╔═╡ db6bd34a-e111-4532-ad7a-d425d05671bf
 @bind iterations PlutoUI.Slider(1000:500:5000)
-
-# ╔═╡ 940617c8-bd30-4a5b-ab1c-b761a178223e
-#iterations=1900
 
 # ╔═╡ 1fbc95a2-7c95-4482-9488-166fe9e37885
 md" iterations selected = $iterations "
@@ -167,24 +164,15 @@ begin
 	range
 	
 	if cmp(range,"λ > 1")==0
-		values=2:200
+		values=2:200;
 	else
-		values=0.1:0.01:0.9
+		values=0.1:0.01:0.9;
 	end
 
-end
+end;
 
 # ╔═╡ 042a8d45-ce8d-471a-a9ea-f7c1ae4bf7c2
 @bind lamda PlutoUI.Slider(values)
-
-# ╔═╡ 03498d3a-827a-44b9-acc6-548a0129c328
-#lamda=2
-
-# ╔═╡ 55c41e42-d6bf-4187-ae6a-4939eb635a01
-#@bind lamda PlutoUI.Slider(0.01:0.01:0.9)
-
-# ╔═╡ 8b39203a-f5ad-4d33-9abe-2d117f10697c
-#@bind lamda PlutoUI.Slider(2:100)
 
 # ╔═╡ 14f95891-91c5-4653-9d72-6b1410098b16
 md" lamda selected= $lamda "
@@ -204,17 +192,20 @@ md" Initial points :  "
 # ╔═╡ 768df7c9-ed86-45dd-87db-3b7df2641283
 Show(MIME"image/png"(), read("$(sectionData).png"))
 
+# ╔═╡ 450df746-2a00-486c-a889-57bcbb971a4f
+md" Algorithm execution : "
+
 # ╔═╡ dc3c5357-6b8c-45cf-bff5-1400c24e5e32
 md" Points after iterations of the algorithm : "
-
-# ╔═╡ 51444e6d-cd4c-4950-a047-0f3c4865701d
-#gif(showPlots(yS,sectionData), "$(sectionData)_l$(lamda)_iter$(iterations).gif", fps = 1,show_msg=false)
 
 # ╔═╡ d79a33b1-f8ed-4a56-b9d4-5d63e1d018c9
 md" reload iterations' video : "
 
 # ╔═╡ e9c48d1c-1906-4d7d-9c9e-8e10c0fac80d
 @bind restart PlutoUI.Button("restart")
+
+# ╔═╡ 51444e6d-cd4c-4950-a047-0f3c4865701d
+#gif(showPlots(yS,sectionData), "$(sectionData)_l$(lamda)_iter$(iterations).gif", fps = 1,show_msg=false)
 
 # ╔═╡ 304ae7c3-12a8-4d34-b6b9-a7bedbc4c918
 #----------------------- FUNCTIONS' DECLARATIONS -----------------
@@ -236,7 +227,7 @@ function callExec()
 	option2="-m$iterations"
 	
 	#path=string(notebookDir,"/bin/demo_stochastic_matrix")
-	path0=string(notebookDir,"/alg/bin/")
+	path0=string(notebookDir,"/sgtsnepi_mirror/bin/")
 	#path0=string(notebookDir,"/bin/")
 	path=string(path0,demo)
 
@@ -250,7 +241,7 @@ function callExec()
                       error("ERROR: Call exited with a non-zero return code exit status, please refer to the executable output for further details")
 	end
 	
-end
+					  end;
 
 # ╔═╡ 3608fdac-e028-4a56-bbb0-e3e00eac242a
 begin
@@ -495,7 +486,7 @@ function showPlots(y,graph)
 				
 			return anim
 
-end
+end;
 
 # ╔═╡ e1862389-2026-49a6-b086-1a3b59934c64
 begin
@@ -1597,59 +1588,56 @@ version = "1.4.1+0"
 
 # ╔═╡ Cell order:
 # ╟─8d3fc68e-3592-4388-b42b-a99785e97c59
-# ╠═c6373307-b528-4657-9825-b72cef998ae1
-# ╠═7060bcbf-32a8-44d0-b6b1-524251b6bfdc
-# ╠═19946165-d0f9-44b0-85f2-97772e3d2b2e
-# ╠═e7ecb71d-ec3b-47c7-97dc-4c0d989b0500
-# ╠═e0ba4df8-6f5b-4200-874a-42d79adfd173
-# ╠═fbeb70c5-16a8-432a-8fa1-2762d097ef29
-# ╠═cca1a97b-2d90-47cb-b662-0987c2718c1e
-# ╠═25f2504e-fc26-4469-9ca3-e3cf54d6440f
-# ╠═d7a6a6e1-5f47-48be-ac02-77b35d202bfa
-# ╠═b58f0a42-0d6a-4d4c-a1df-e18216aa271b
-# ╠═e3ddabac-af16-4101-bfe9-e99bd1af963d
-# ╠═9fa169d9-c685-49f8-b716-cfec1d80570a
-# ╠═8875ccea-0431-4ca5-8489-680c6f4423a9
-# ╠═f0a1817b-5716-4f13-a570-7f1aec378b21
-# ╠═3a8f1ce5-ac95-4bf4-8564-9c3a6aa8f203
-# ╠═61d87550-5be7-4fdb-89ed-b683ff29b0f6
-# ╠═0812ef32-ded7-4700-8ac6-251d1828c8ce
-# ╠═362cbcb7-85e1-436d-9c77-fe352c2000a2
-# ╠═4d57bc80-a9cf-4423-b879-655f245f6796
-# ╠═03df19b7-02d8-4a79-97df-fba16358f1d9
-# ╠═9c8c0a6c-2170-45fe-8965-6271bb5a9d6f
-# ╠═69a5b112-934d-4a02-beff-e2d2a0d0572a
-# ╠═f8bfc6d5-0cec-4373-b0ab-09eb71220995
-# ╠═db6bd34a-e111-4532-ad7a-d425d05671bf
-# ╠═940617c8-bd30-4a5b-ab1c-b761a178223e
-# ╠═1fbc95a2-7c95-4482-9488-166fe9e37885
-# ╠═10e961b1-3c40-453b-853b-c0e4037ff9af
-# ╠═f3334292-08d4-4254-acab-dbc5d537639e
-# ╠═f331562a-a104-49aa-af26-bdff42d4427f
-# ╠═c4fb0d6c-7cf2-423d-a1fe-8f789403163d
-# ╠═7d1f29e7-a658-487c-85d5-19411140e2a8
-# ╠═08f587fe-da3b-445d-85ba-67bbabbfa3fe
-# ╠═042a8d45-ce8d-471a-a9ea-f7c1ae4bf7c2
-# ╠═03498d3a-827a-44b9-acc6-548a0129c328
-# ╠═55c41e42-d6bf-4187-ae6a-4939eb635a01
-# ╠═8b39203a-f5ad-4d33-9abe-2d117f10697c
-# ╠═14f95891-91c5-4653-9d72-6b1410098b16
-# ╠═5f976946-cd3e-46b5-af40-5cc3e73cd2cf
-# ╠═4712dd84-915c-4147-a605-cc9bce6a1ea9
-# ╠═ef416764-9f37-4220-8fb7-48f484414a44
-# ╠═666264c5-0776-4eb1-ba29-27275dc703ab
-# ╠═768df7c9-ed86-45dd-87db-3b7df2641283
-# ╠═dc3c5357-6b8c-45cf-bff5-1400c24e5e32
-# ╠═51444e6d-cd4c-4950-a047-0f3c4865701d
-# ╠═d79a33b1-f8ed-4a56-b9d4-5d63e1d018c9
-# ╠═e9c48d1c-1906-4d7d-9c9e-8e10c0fac80d
-# ╠═3608fdac-e028-4a56-bbb0-e3e00eac242a
-# ╠═e1862389-2026-49a6-b086-1a3b59934c64
-# ╠═304ae7c3-12a8-4d34-b6b9-a7bedbc4c918
-# ╠═216e2378-e270-404d-b218-29946be98cdc
-# ╠═ad59f7db-bd17-41b7-b1a7-b1431c914d0d
-# ╠═f3500552-aa3a-4a3f-9169-b99e61f0f2da
-# ╠═3384ef43-89a8-41e2-b895-1d2b58470c81
-# ╠═cb795b94-c680-46ec-bc70-d6b9751c488e
+# ╟─c6373307-b528-4657-9825-b72cef998ae1
+# ╟─7060bcbf-32a8-44d0-b6b1-524251b6bfdc
+# ╟─19946165-d0f9-44b0-85f2-97772e3d2b2e
+# ╟─e7ecb71d-ec3b-47c7-97dc-4c0d989b0500
+# ╟─e0ba4df8-6f5b-4200-874a-42d79adfd173
+# ╟─fbeb70c5-16a8-432a-8fa1-2762d097ef29
+# ╟─cca1a97b-2d90-47cb-b662-0987c2718c1e
+# ╟─25f2504e-fc26-4469-9ca3-e3cf54d6440f
+# ╟─d7a6a6e1-5f47-48be-ac02-77b35d202bfa
+# ╟─b58f0a42-0d6a-4d4c-a1df-e18216aa271b
+# ╟─e3ddabac-af16-4101-bfe9-e99bd1af963d
+# ╟─9fa169d9-c685-49f8-b716-cfec1d80570a
+# ╟─8875ccea-0431-4ca5-8489-680c6f4423a9
+# ╟─f0a1817b-5716-4f13-a570-7f1aec378b21
+# ╟─3a8f1ce5-ac95-4bf4-8564-9c3a6aa8f203
+# ╟─61d87550-5be7-4fdb-89ed-b683ff29b0f6
+# ╟─0812ef32-ded7-4700-8ac6-251d1828c8ce
+# ╟─362cbcb7-85e1-436d-9c77-fe352c2000a2
+# ╟─4d57bc80-a9cf-4423-b879-655f245f6796
+# ╟─03df19b7-02d8-4a79-97df-fba16358f1d9
+# ╟─9c8c0a6c-2170-45fe-8965-6271bb5a9d6f
+# ╟─69a5b112-934d-4a02-beff-e2d2a0d0572a
+# ╟─f8bfc6d5-0cec-4373-b0ab-09eb71220995
+# ╟─db6bd34a-e111-4532-ad7a-d425d05671bf
+# ╟─1fbc95a2-7c95-4482-9488-166fe9e37885
+# ╟─10e961b1-3c40-453b-853b-c0e4037ff9af
+# ╟─f3334292-08d4-4254-acab-dbc5d537639e
+# ╟─f331562a-a104-49aa-af26-bdff42d4427f
+# ╟─c4fb0d6c-7cf2-423d-a1fe-8f789403163d
+# ╟─7d1f29e7-a658-487c-85d5-19411140e2a8
+# ╟─08f587fe-da3b-445d-85ba-67bbabbfa3fe
+# ╟─042a8d45-ce8d-471a-a9ea-f7c1ae4bf7c2
+# ╟─14f95891-91c5-4653-9d72-6b1410098b16
+# ╟─5f976946-cd3e-46b5-af40-5cc3e73cd2cf
+# ╟─4712dd84-915c-4147-a605-cc9bce6a1ea9
+# ╟─ef416764-9f37-4220-8fb7-48f484414a44
+# ╟─666264c5-0776-4eb1-ba29-27275dc703ab
+# ╟─768df7c9-ed86-45dd-87db-3b7df2641283
+# ╟─450df746-2a00-486c-a889-57bcbb971a4f
+# ╟─3608fdac-e028-4a56-bbb0-e3e00eac242a
+# ╟─dc3c5357-6b8c-45cf-bff5-1400c24e5e32
+# ╟─e1862389-2026-49a6-b086-1a3b59934c64
+# ╟─d79a33b1-f8ed-4a56-b9d4-5d63e1d018c9
+# ╟─e9c48d1c-1906-4d7d-9c9e-8e10c0fac80d
+# ╟─51444e6d-cd4c-4950-a047-0f3c4865701d
+# ╟─304ae7c3-12a8-4d34-b6b9-a7bedbc4c918
+# ╟─216e2378-e270-404d-b218-29946be98cdc
+# ╟─ad59f7db-bd17-41b7-b1a7-b1431c914d0d
+# ╟─f3500552-aa3a-4a3f-9169-b99e61f0f2da
+# ╟─3384ef43-89a8-41e2-b895-1d2b58470c81
+# ╟─cb795b94-c680-46ec-bc70-d6b9751c488e
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

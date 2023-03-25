@@ -25,6 +25,8 @@ begin
 			using Plots
 			#using PythonPlot
 			using Distributions
+			using ColorSchemes
+			using Colors
 end
 
 # ╔═╡ c6373307-b528-4657-9825-b72cef998ae1
@@ -42,15 +44,6 @@ cd(string(notebookDir,"/pluto data"))
 # ╔═╡ e0ba4df8-6f5b-4200-874a-42d79adfd173
 #cd("/home/dimitra/.julia/pluto_notebooks")
 
-# ╔═╡ cca1a97b-2d90-47cb-b662-0987c2718c1e
-#cd(notebookDir)
-
-# ╔═╡ 25f2504e-fc26-4469-9ca3-e3cf54d6440f
-#using LinearAlgebra
-
-# ╔═╡ d7a6a6e1-5f47-48be-ac02-77b35d202bfa
-#LinearAlgebra.issymmetric(pointsM)
-
 # ╔═╡ b58f0a42-0d6a-4d4c-a1df-e18216aa271b
 #--------------------------------------------------------------------
 
@@ -67,13 +60,10 @@ md" Select algorithm parameters! "
 md" Select input data : "
 
 # ╔═╡ 3a8f1ce5-ac95-4bf4-8564-9c3a6aa8f203
-@bind dataChoice Select(["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","same pair distance","uniform","grid","two rings"])
+@bind dataChoice Select(["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","simplex","uniform","grid","two rings"])
 
 # ╔═╡ 61d87550-5be7-4fdb-89ed-b683ff29b0f6
-choices=["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","same pair distance","uniform","grid","two rings"];
-
-# ╔═╡ 0812ef32-ded7-4700-8ac6-251d1828c8ce
-#length(choices)
+choices=["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","simplex","uniform","grid","two rings"];
 
 # ╔═╡ 362cbcb7-85e1-436d-9c77-fe352c2000a2
 begin
@@ -111,7 +101,7 @@ begin
 	elseif dataChoice==choices[15]
 		sectionData="randomJump"
 	elseif dataChoice==choices[16]
-		sectionData="samePairDistance"
+		sectionData="simplex"
 	elseif dataChoice==choices[17]
 		sectionData="uniform"
 	elseif dataChoice==choices[18]
@@ -120,19 +110,7 @@ begin
 		sectionData="twoRings"
 	end
 	
-	end;
-
-# ╔═╡ 4d57bc80-a9cf-4423-b879-655f245f6796
-#@bind sectionData Select(["sizeData","topData","distData","shapesData1","shapesData2","noiseData"])
-
-# ╔═╡ 03df19b7-02d8-4a79-97df-fba16358f1d9
-#md" Dimensions : "
-
-# ╔═╡ 9c8c0a6c-2170-45fe-8965-6271bb5a9d6f
-#@bind dimensions PlutoUI.Slider(2:3)
-
-# ╔═╡ 69a5b112-934d-4a02-beff-e2d2a0d0572a
-#md" dimensions selcted = $dimensions "
+end;
 
 # ╔═╡ f8bfc6d5-0cec-4373-b0ab-09eb71220995
 md" Iterations : "
@@ -278,16 +256,50 @@ function showPlots(y,graph)
 		pointsSize=size(points,1)
 		#nz=SparseArrays.nnz(points)
 
+		if(graph=="trefoil"||graph=="circle")
+							L=collect(2*pi/pointsSize:2*pi/pointsSize:2*pi)
+							color_map=readdlm("$(sectionData).txt",',', '\n')
+							colors=[Colors.RGB(color_map[i,1],color_map[i,2],color_map[i,3]) for i in 1:size(color_map,1)]
+							colorGr=cgrad(ColorScheme(colors))
+
+		elseif(graph=="orthogonalSteps"||graph=="randomWalk"||graph=="randomJump")
+							L=1.5*pi/pointsSize:1.5*pi/pointsSize:1.5*pi
+							color_map=readdlm("$(sectionData).txt",',', '\n')
+							colors=[Colors.RGB(color_map[i,1],color_map[i,2],color_map[i,3]) for i in 1:size(color_map,1)]
+							colorGr=cgrad(ColorScheme(colors))
+
+		elseif(graph=="randomCircle")
+							L=readdlm("L-$(sectionData).txt",'\n')
+							color_map=readdlm("$(sectionData).txt",',', '\n')
+							colors=[Colors.RGB(color_map[i,1],color_map[i,2],color_map[i,3]) for i in 1:size(color_map,1)]
+							colorGr=cgrad(ColorScheme(colors))
+		else
+							b=collect(0:pi/pointsSize:pi)
+							a=b[1:pointsSize]
+							L=[(1 .+ cos.(a))./ 2 sin.(a) (1 .- cos.(a)) ./ 2]
+							#color_map=readdlm("$(sectionData).txt",',', '\n')
+							colors=[Colors.RGB(L[i,1],L[i,2],L[i,3]) for i in 1:size(L,1)]
+							colorGr=cgrad(ColorScheme(colors))
+
+		end
+						
 		anim=@animate for i in 2:50:iterations
 
 				iterStart=(i-1)*pointsSize+1
-				end1=iterStart+pointsSize÷2-1
+
+				if(graph=="sameDistance"||graph=="differentDistances")
+					# three-cluster plot
+					end1=iterStart+pointsSize÷3-1
+				else
+					# two-cluster plot
+					end1=iterStart+pointsSize÷2-1
+				end
 				start2=end1+1
 				iterEnd=i*pointsSize
 				end2=start2+pointsSize÷3-1
 				start3=end2+1
 			
-				if(graph=="noise"||graph=="ellipse"||graph=="samePairDistance"||graph=="uniform")
+				if(graph=="noise"||graph=="ellipse"||graph=="simplex"||graph=="uniform")
 					
 					# one-cluster plot
 					Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",legend=false,markercolor=:blue,markersize = 3)
@@ -315,27 +327,19 @@ function showPlots(y,graph)
 				else
 
 						if(graph=="trefoil"||graph=="circle")
-							L=collect(2*pi/pointsSize:2*pi/pointsSize:2*pi)
-
-							Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:gist_rainbow)
+						
+							Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=colorGr)
 							
 						elseif(graph=="orthogonalSteps"||graph=="randomWalk"||graph=="randomJump")
-							L=1.5*pi/pointsSize:1.5*pi/pointsSize:1.5*pi
-
-							Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:gist_rainbow)
+							#=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:gist_rainbow)=#
+							Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=colorGr)
 
 						elseif(graph=="randomCircle")
-							d=Uniform()
-							L=2*pi*rand(d,(1,pointsSize))
-
-							Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:rainbow1)
+							Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=colorGr)
 
 						else
-							b=collect(0:pi/pointsSize:pi)
-							a=b[1:pointsSize]
-							L=[(1 .+ cos.(a))./ 2 sin.(a) (1 .- cos.(a)) ./ 2]
-
-							Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:gist_rainbow)
+							Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,legend=false,markercolor=colors)
+							
 						end
 						
 				 end
@@ -359,7 +363,7 @@ function showPlots(y,graph)
 		end2=start2+pointsSize÷3-1
 		start3=end2+1
 
-		if(graph=="noise"||graph=="ellipse"||graph=="samePairDistance"||graph=="uniform")
+		if(graph=="noise"||graph=="ellipse"||graph=="simplex"||graph=="uniform")
 		
 					p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",legend=false,markercolor=:blue,markersize = 3)
 
@@ -370,7 +374,7 @@ function showPlots(y,graph)
 					if cmp(demo,"demo_stochastic_matrix")==0
 						png(p,"$(sectionData)_l$(lamda)_iter$(iterations).png")
 					else
-						png(p,"$(sectionData)_u$(u)_iter$(iterations).png")
+						png(p,"$(sectionData)_u$(u).png")
 					end			
 					
 		elseif (graph=="linkedRings"||graph=="unlinkedRings"||graph=="differentSizes"||graph=="concentricCircles"||graph=="parallelLines"||graph=="twoRings")
@@ -386,7 +390,7 @@ function showPlots(y,graph)
 					if cmp(demo,"demo_stochastic_matrix")==0
 						png(p,"$(sectionData)_l$(lamda)_iter$(iterations).png")
 					else
-						png(p,"$(sectionData)_u$(u)_iter$(iterations).png")
+						png(p,"$(sectionData)_u$(u).png")
 					end		
 
 					frame(anim)
@@ -406,7 +410,7 @@ function showPlots(y,graph)
 			 		if cmp(demo,"demo_stochastic_matrix")==0
 						png(p,"$(sectionData)_l$(lamda)_iter$(iterations).png")
 					else
-						png(p,"$(sectionData)_u$(u)_iter$(iterations).png")
+						png(p,"$(sectionData)_u$(u).png")
 					end		
 
 			 		frame(anim)
@@ -414,50 +418,40 @@ function showPlots(y,graph)
 			else
 
 						if(graph=="trefoil"||graph=="circle")
-							L=collect(2*pi/pointsSize:2*pi/pointsSize:2*pi)
-
-							p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:gist_rainbow)
+							p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=colorGr)
 
 							if cmp(demo,"demo_stochastic_matrix")==0
 								png(p,"$(sectionData)_l$(lamda)_iter$(iterations).png")
 							else
-								png(p,"$(sectionData)_u$(u)_iter$(iterations).png")
+								png(p,"$(sectionData)_u$(u).png")
 							end		
 							
 						elseif(graph=="orthogonalSteps"||graph=="randomWalk"||graph=="randomJump")
-							L=1.5*pi/pointsSize:1.5*pi/pointsSize:1.5*pi
-
-							p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:gist_rainbow)
+							#=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:gist_rainbow)=#
+							p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=colorGr)
 
 							if cmp(demo,"demo_stochastic_matrix")==0
 								png(p,"$(sectionData)_l$(lamda)_iter$(iterations).png")
 							else
-								png(p,"$(sectionData)_u$(u)_iter$(iterations).png")
+								png(p,"$(sectionData)_u$(u).png")
 							end		
 
 						elseif(graph=="randomCircle")
-							d=Uniform()
-							L=2*pi*rand(d,(1,pointsSize))
-
-							p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:rainbow1)
+							p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=colorGr)
 
 							if cmp(demo,"demo_stochastic_matrix")==0
 								png(p,"$(sectionData)_l$(lamda)_iter$(iterations).png")
 							else
-								png(p,"$(sectionData)_u$(u)_iter$(iterations).png")
+								png(p,"$(sectionData)_u$(u).png")
 							end		
 
 						else
-							b=collect(0:pi/pointsSize:pi)
-							a=b[1:pointsSize]
-							L=[(1 .+ cos.(a))./ 2 sin.(a) (1 .- cos.(a)) ./ 2]
-
-							p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,marker_z=L,legend=false,seriescolor=:gist_rainbow)
+							p=Plots.scatter(y[(i-1)*pointsSize+1:i*pointsSize,1],y[(i-1)*pointsSize+1:i*pointsSize,2],title="points after iteration $i",markersize = 3,legend=false,markercolor=colors)
 
 							if cmp(demo,"demo_stochastic_matrix")==0
 								png(p,"$(sectionData)_l$(lamda)_iter$(iterations).png")
 							else
-								png(p,"$(sectionData)_u$(u)_iter$(iterations).png")
+								png(p,"$(sectionData)_u$(u).png")
 							end		
 							
 						end
@@ -501,6 +495,8 @@ end
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
+ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
+Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 MatrixMarket = "4d4711f2-db25-561a-b6b3-d35e7d4047d3"
@@ -509,6 +505,8 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
+ColorSchemes = "~3.20.0"
+Colors = "~0.12.10"
 Distributions = "~0.25.80"
 MatrixMarket = "~0.3.1"
 Plots = "~1.31.7"
@@ -599,9 +597,9 @@ version = "0.9.9"
 
 [[deps.Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "Reexport"]
-git-tree-sha1 = "417b0ed7b8b838aa6ca0a87aadf1bb9eb111ce40"
+git-tree-sha1 = "fc08e5930ee9a4e03f84bfb5211cb54e7769758a"
 uuid = "5ae59095-9a9b-59fe-a467-6f913c188581"
-version = "0.12.8"
+version = "0.12.10"
 
 [[deps.Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
@@ -1594,22 +1592,14 @@ version = "1.4.1+0"
 # ╟─e7ecb71d-ec3b-47c7-97dc-4c0d989b0500
 # ╟─e0ba4df8-6f5b-4200-874a-42d79adfd173
 # ╟─fbeb70c5-16a8-432a-8fa1-2762d097ef29
-# ╟─cca1a97b-2d90-47cb-b662-0987c2718c1e
-# ╟─25f2504e-fc26-4469-9ca3-e3cf54d6440f
-# ╟─d7a6a6e1-5f47-48be-ac02-77b35d202bfa
-# ╟─b58f0a42-0d6a-4d4c-a1df-e18216aa271b
-# ╟─e3ddabac-af16-4101-bfe9-e99bd1af963d
-# ╟─9fa169d9-c685-49f8-b716-cfec1d80570a
+# ╠═b58f0a42-0d6a-4d4c-a1df-e18216aa271b
+# ╠═e3ddabac-af16-4101-bfe9-e99bd1af963d
+# ╠═9fa169d9-c685-49f8-b716-cfec1d80570a
 # ╟─8875ccea-0431-4ca5-8489-680c6f4423a9
 # ╟─f0a1817b-5716-4f13-a570-7f1aec378b21
 # ╟─3a8f1ce5-ac95-4bf4-8564-9c3a6aa8f203
 # ╟─61d87550-5be7-4fdb-89ed-b683ff29b0f6
-# ╟─0812ef32-ded7-4700-8ac6-251d1828c8ce
 # ╟─362cbcb7-85e1-436d-9c77-fe352c2000a2
-# ╟─4d57bc80-a9cf-4423-b879-655f245f6796
-# ╟─03df19b7-02d8-4a79-97df-fba16358f1d9
-# ╟─9c8c0a6c-2170-45fe-8965-6271bb5a9d6f
-# ╟─69a5b112-934d-4a02-beff-e2d2a0d0572a
 # ╟─f8bfc6d5-0cec-4373-b0ab-09eb71220995
 # ╟─db6bd34a-e111-4532-ad7a-d425d05671bf
 # ╟─1fbc95a2-7c95-4482-9488-166fe9e37885

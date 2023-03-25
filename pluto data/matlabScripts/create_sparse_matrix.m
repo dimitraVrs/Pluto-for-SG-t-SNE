@@ -1,10 +1,8 @@
-%% A quick demonstrator of SG-t-SNE-Pi
-
 clear
 
 problem = {'grid', 'twoRings', 'sameDistance','differentSizes','differentDistances', ...
     'trefoil','concentricCircles','noise','ellipse','parallelLines','circle','randomCircle', ...
-    'orthogonalSteps','randomWalk','randomJump','samePairDistance','uniform','linkedRings','unlinkedRings'}; %
+    'orthogonalSteps','randomWalk','randomJump','simplex','uniform','linkedRings','unlinkedRings'}; %
 
 msg = '';
 for i=1:length(problem)
@@ -13,13 +11,9 @@ end
 
 pid = input(sprintf('%s\nSelect test case (1-%d): ',msg,length(problem)));
 
-if (pid==1 || pid==6 || pid==8 || pid==9 || pid==11 || pid==13 || pid==14 || pid==15 || pid==17 || pid==12 || pid==16)
-    u=input('\nGive a perplexity value (5-50): ');
-end
+u=input('\nGive a perplexity value (5-50): ');
 
 fprintf('Processing %s\n',problem{pid})
-
-% initial supposedly unknown original coordinates
 
 eps = 100;
 
@@ -94,10 +88,16 @@ switch problem{pid}
 
     figure(pid)
     scatter(X(:,1),X(:,2),eps,L,'.');
+%     colormap(parula(n))
     axis equal off
     title('Original space of grid')
     imgName=sprintf('%s.png',problem{pid});
     saveas(gcf,imgName)
+
+    % write colormap in txt file to use the same in Julia
+%     txtName=sprintf('%s.txt',problem{pid});
+%     cmap=colormap;
+%     writematrix(cmap,txtName);
 
     D = similarityMatrix(X,n);
 
@@ -114,7 +114,7 @@ switch problem{pid}
     end
 
     case 'differentSizes'
-        n0=400;
+        n0=200;
         n=2*n0;
         muSize=zeros(n,n);
         muSize(n0+1:n,1)=100;
@@ -135,12 +135,24 @@ switch problem{pid}
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
 
+        % sparse matrix
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        nn=ceil(3*u);
+        k=nn;
+
+        [Dsorted,I]=sort(D,2,'descend');
+
         Dsp=zeros(n,n);
-        Dsp(1:n0,1:n0)=D(1:n0,1:n0);
-        Dsp(n0+1:n,n0+1:n)=D(n0+1:n,n0+1:n);
+        for i=1:n
+            for j=1:k
+                Dsp(i,I(i,j))=D(i,I(i,j));
+            end
+        end
+
+%         Dsp=zeros(n,n);
+%         Dsp(1:n0,1:n0)=D(1:n0,1:n0);
+%         Dsp(n0+1:n,n0+1:n)=D(n0+1:n,n0+1:n);
 
     case 'differentDistances'
         n0=200;
@@ -172,13 +184,25 @@ switch problem{pid}
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
 
+        % sparse matrix
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        nn=ceil(3*u);
+        k=nn;
+
+        [Dsorted,I]=sort(D,2,'descend');
+
         Dsp=zeros(n,n);
-        Dsp(1:n0,1:n0)=D(1:n0,1:n0);
-        Dsp(n0+1:2*n0,n0+1:2*n0)=D(n0+1:2*n0,n0+1:2*n0);
-        Dsp(2*n0+1:3*n0,2*n0+1:3*n0)=D(2*n0+1:3*n0,2*n0+1:3*n0);
+        for i=1:n
+            for j=1:k
+                Dsp(i,I(i,j))=D(i,I(i,j));
+            end
+        end
+
+%         Dsp=zeros(n,n);
+%         Dsp(1:n0,1:n0)=D(1:n0,1:n0);
+%         Dsp(n0+1:2*n0,n0+1:2*n0)=D(n0+1:2*n0,n0+1:2*n0);
+%         Dsp(2*n0+1:3*n0,2*n0+1:3*n0)=D(2*n0+1:3*n0,2*n0+1:3*n0);
 
     case 'trefoil'
 
@@ -196,10 +220,16 @@ switch problem{pid}
 
         figure(pid)
         scatter3(X(:,1),X(:,2),X(:,3),eps,L,'.');
+        colormap(parula(n))
         axis equal off
         title('Original space of trefoil knot')
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
+
+        % write colormap in txt file to use the same in Julia
+        txtName=sprintf('%s.txt',problem{pid});
+        cmap=colormap;
+        writematrix(cmap,txtName);
 
         figure(100)
         scatter(X(:,1),X(:,2),eps,L,'.');
@@ -272,15 +302,28 @@ switch problem{pid}
 
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        % sparse matrix
+        [Dsorted,I]=sort(D,2,'descend');
+
+        nn=ceil(3*u);
+        k=nn;
+
         Dsp=zeros(n,n);
-        % cluster 1
-        Dsp(n0/2+1:n0+n0/2,n0/2+1:n0+n0/2)=D(1:n0,1:n0); 
-        % cluster 2
-        Dsp(1:n0/2,1:n0/2)=D(n0+1:n0+n0/2,n0+1:n0+n0/2);
-        Dsp(n0+n0/2+1:n,n0+n0/2+1:n)=D(n0+n0/2+1:n,n0+n0/2+1:n);
-        Dsp(1:n0/2,n0+n0/2+1:n)=D(n0+1:n0+n0/2,n0+n0/2+1:n);
-        Dsp(n0+n0/2+1:n,1:n0/2)=D(n0+n0/2+1:n,n0+1:n0+n0/2);
+        for i=1:n
+            for j=1:k
+                Dsp(i,I(i,j))=D(i,I(i,j));
+            end
+        end
+
+%         % sparse stochastic matrix
+%         Dsp=zeros(n,n);
+%         % cluster 1
+%         Dsp(n0/2+1:n0+n0/2,n0/2+1:n0+n0/2)=D(1:n0,1:n0); 
+%         % cluster 2
+%         Dsp(1:n0/2,1:n0/2)=D(n0+1:n0+n0/2,n0+1:n0+n0/2);
+%         Dsp(n0+n0/2+1:n,n0+n0/2+1:n)=D(n0+n0/2+1:n,n0+n0/2+1:n);
+%         Dsp(1:n0/2,n0+n0/2+1:n)=D(n0+1:n0+n0/2,n0+n0/2+1:n);
+%         Dsp(n0+n0/2+1:n,1:n0/2)=D(n0+n0/2+1:n,n0+1:n0+n0/2);
 
     case 'noise'
         n=500;
@@ -385,13 +428,26 @@ switch problem{pid}
         D = similarityMatrix(X,n);
 
         % sparse matrix
+        [Dsorted,I]=sort(D,2,'descend');
+
+        nn=ceil(3*u);
+        k=nn;
+
         Dsp=zeros(n,n);
-        Dsp(1:n0,1:n0)=D(1:n0,1:n0);
-        Dsp(n0+1:2*n0,n0+1:2*n0)=D(n0+1:2*n0,n0+1:2*n0);
+        for i=1:n
+            for j=1:k
+                Dsp(i,I(i,j))=D(i,I(i,j));
+            end
+        end
+
+%         % sparse matrix
+%         Dsp=zeros(n,n);
+%         Dsp(1:n0,1:n0)=D(1:n0,1:n0);
+%         Dsp(n0+1:2*n0,n0+1:2*n0)=D(n0+1:2*n0,n0+1:2*n0);
 
     case 'circle'
-        n=600;
-        X=zeros(n,n);
+        n=200;
+        X=zeros(n,2);
         L=zeros(n,1);
         for i=1:n
             t=2*pi*i/n;
@@ -402,16 +458,21 @@ switch problem{pid}
 
         figure(pid)
         scatter(X(:,1),X(:,2),eps,L,'.');
+        colormap(parula(n))
         axis equal off
         title('Original space of circle')
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
 
+        % write colormap in txt file to use the same in Julia
+        txtName=sprintf('%s.txt',problem{pid});
+        cmap=colormap;
+        writematrix(cmap,txtName);
+
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        % sparse matrix
         [Dsorted,I]=sort(D,2,'descend');
-        %u=30;
         nn=ceil(3*u);
         k=nn;
 
@@ -424,7 +485,7 @@ switch problem{pid}
      
     case 'randomCircle'
         n=200;
-        X=zeros(n,n);
+        X=zeros(n,2);
         L=zeros(n,1);
         for i=1:n
             t=2*pi*rand();
@@ -435,16 +496,26 @@ switch problem{pid}
 
         figure(pid)
         scatter(X(:,1),X(:,2),eps,L,'.');
+        colormap(parula(n))
         axis equal off
         title('Original space of random circle')
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
 
+        % write colormap in txt file to use the same in Julia
+        txtName=sprintf('%s.txt',problem{pid});
+        cmap=colormap;
+        writematrix(cmap,txtName);
+
+        % write L in txt file to use the same in Julia
+        txtName2=sprintf('L-%s.txt',problem{pid});
+        cmap=colormap;
+        writematrix(L,txtName2);
+
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        % sparse matrix
         [Dsorted,I]=sort(D,2,'descend');
-        %u=30;
         nn=ceil(3*u);
         k=nn;
 
@@ -471,10 +542,16 @@ switch problem{pid}
 
         figure(pid)
         scatter(X(:,1),X(:,2),eps,L,'.');
+        colormap(parula(n))
         axis equal off
         title('Original space of orthogonal steps')
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
+
+        % write colormap in txt file to use the same in Julia
+        txtName=sprintf('%s.txt',problem{pid});
+        cmap=colormap;
+        writematrix(cmap,txtName);
 
         D = similarityMatrix(X,n);
 
@@ -491,7 +568,7 @@ switch problem{pid}
         end
 
     case 'randomWalk'
-        n=700;
+        n=200;
         X=zeros(n,2);
 
         L=ones(n,1);
@@ -508,10 +585,16 @@ switch problem{pid}
 
         figure(pid)
         scatter(X(:,1),X(:,2),eps,L,'.');
+        colormap(parula(n))
         axis equal off
         title('Original space of random walk')
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
+
+        % write colormap in txt file to use the same in Julia
+        txtName=sprintf('%s.txt',problem{pid});
+        cmap=colormap;
+        writematrix(cmap,txtName);
 
         D = similarityMatrix(X,n);
 
@@ -534,15 +617,13 @@ switch problem{pid}
         L=ones(n,1);
         L(1,1)=1.5*pi/n;
 
-        r=normrnd([0,0],[1,1],1,2);
-        r=r*sqrt(2);
+        r=sqrt(2)*normrnd([0,0],[1,1],1,2);
 
         X(1,:)=normrnd([0,0],[1,1],1,2)+r;
 
         for i=2:n
             for j=1:2
-                rj=normrnd(0,1);
-                rj=rj*sqrt(2);
+                rj=sqrt(2)*normrnd(0,1);
                 X(i,j)=X(i-1,j)+normrnd(0,1)+rj;
             end
             L(i,1)=1.5*pi*i/n;
@@ -550,10 +631,16 @@ switch problem{pid}
 
         figure(pid)
         scatter(X(:,1),X(:,2),eps,L,'.');
+        colormap(parula(n))
         axis equal off
         title('Original space of random jump')
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
+
+        % write colormap in txt file to use the same in Julia
+        txtName=sprintf('%s.txt',problem{pid});
+        cmap=colormap;
+        writematrix(cmap,txtName);
 
         D = similarityMatrix(X,n);
 
@@ -570,57 +657,56 @@ switch problem{pid}
             end
         end
 
-    case 'samePairDistance'
-        %         n=200;
-        %         X=zeros(n,2);
-        %
-        %         L=ones(n,1);
-        %
-        %         for i=1:n
-        %             for j=1:n
-        %                 if j==i
-        %                     X(j,:)=1+0.5*normrnd([0,0],[1,1],1,2);
-        %                 end
-        %             end
-        %         end
+    case 'simplex'
+        n=200;
+        X=zeros(n,n);
 
-        n1=200;
-        X1=zeros(n1,2);
-        
-        for i=1:n1
-            t=2*pi*i/n1;
-            X1(i,1)=cos(t);
-            X1(i,2)=sin(t);
+%         noise=0.5;
+
+        for i=1:n
+            for j=1:n
+                if j==i
+%                     X(i,j)=noise*normrnd(0,1)+1;
+                      X(i,j)=1;
+                end
+            end
         end
-
-        r2=1-norm(X1(1,:)-X1(2,:));
-        n2=ceil(n1*r2);
-        X2=zeros(n2,2);
-        n=n1+n2;
-
-        for i=1:n2
-            t=2*pi*i/n1;
-            X2(i,1)=r2*cos(t);
-            X2(i,2)=r2*sin(t);
-        end
-
-        X=[X1; X2];
 
         figure(pid)
-        scatter(X(:,1),X(:,2),eps,[0 0.4470 0.7410],'.')
-        axis equal off
-        title('Original space')
-%         legend('simplex')
+        scatter3(X(:,1),X(:,2),X(:,3),200,[0 0.4470 0.7410],'.');
+%         axis equal off
+        xlabel('x')
+        ylabel('y')
+        zlabel('z')   
+        title('Original 3D space')
+        legend('simplex vertex')
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
 
+        figure(300)
+        scatter(X(:,1),X(:,2),200,[0 0.4470 0.7410],'.');
+        %         axis equal off
+        xlabel('x')
+        ylabel('y')
+        title('Original 2D space')
+        legend('simplex vertex')
+        imgName2D=sprintf('%s2D.png',problem{pid});
+        saveas(gcf,imgName2D)
+
+        figure(200)
+        tetramesh([1 2 3 4],X,'FaceAlpha',0.1)
+%         axis equal off
+        xlabel('x')
+        ylabel('y')
+        zlabel('z') 
+        title('simplex')
+
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        % sparse matrix
         [Dsorted,I]=sort(D,2,'descend');
-        %u=30;
-        nn=ceil(u);
-        k=nn+1;
+        nn=ceil(3*u);
+        k=nn;
 
         Dsp=zeros(n,n);
         for i=1:n
@@ -628,6 +714,7 @@ switch problem{pid}
                 Dsp(i,I(i,j))=D(i,I(i,j));
             end
         end
+
     case 'uniform'
 
         n=200;
@@ -643,9 +730,8 @@ switch problem{pid}
 
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        % sparse matrix
         [Dsorted,I]=sort(D,2,'descend');
-        %u=5;
         nn=ceil(3*u);
         k=nn;
 
@@ -692,12 +778,34 @@ switch problem{pid}
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
 
+        figure(400)
+        scatter(X(1:n0,1),X(1:n0,2),eps,[0 0.4470 0.7410],'.')
+        hold on
+        scatter(X(n0+1:2*n0,1),X(n0+1:2*n0,2),eps,[0.8500 0.3250 0.0980],'.');
+        axis equal off
+        title('Original 2D space')
+        imgName2D=sprintf('%s2D.png',problem{pid});
+        saveas(gcf,imgName2D)
+
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        % sparse matrix
+        nn=ceil(3*u);
+        k=nn;
+
+        [Dsorted,I]=sort(D,2,'descend');
+
         Dsp=zeros(n,n);
-        Dsp(1:n0,1:n0)=D(1:n0,1:n0);
-        Dsp(n0+1:2*n0,n0+1:2*n0)=D(n0+1:2*n0,n0+1:2*n0);
+        for i=1:n
+            for j=1:k
+                Dsp(i,I(i,j))=D(i,I(i,j));
+                %Dsp(I(i,j),i)=Dsp(i,I(i,j));
+            end
+        end
+
+%         Dsp=zeros(n,n);
+%         Dsp(1:n0,1:n0)=D(1:n0,1:n0);
+%         Dsp(n0+1:2*n0,n0+1:2*n0)=D(n0+1:2*n0,n0+1:2*n0);
 
     case 'unlinkedRings'
 
@@ -735,20 +843,38 @@ switch problem{pid}
         imgName=sprintf('%s.png',problem{pid});
         saveas(gcf,imgName)
 
+        figure(500)
+        scatter(X(1:n0,1),X(1:n0,2),eps,[0 0.4470 0.7410],'.')
+        hold on
+        scatter(X(n0+1:2*n0,1),X(n0+1:2*n0,2),eps,[0.8500 0.3250 0.0980],'.');
+        axis equal off
+        title('Original 2D space')
+        imgName2D=sprintf('%s2D.png',problem{pid});
+        saveas(gcf,imgName2D)
+
         D = similarityMatrix(X,n);
 
-        % sparse stochastic matrix
+        % sparse matrix
+        nn=ceil(3*u);
+        k=nn;
+
+        [Dsorted,I]=sort(D,2,'descend');
+
         Dsp=zeros(n,n);
-        Dsp(1:n0,1:n0)=D(1:n0,1:n0);
-        Dsp(n0+1:2*n0,n0+1:2*n0)=D(n0+1:2*n0,n0+1:2*n0);
+        for i=1:n
+            for j=1:k
+                Dsp(i,I(i,j))=D(i,I(i,j));
+                %Dsp(I(i,j),i)=Dsp(i,I(i,j));
+            end
+        end
+
+%         Dsp=zeros(n,n);
+%         Dsp(1:n0,1:n0)=D(1:n0,1:n0);
+%         Dsp(n0+1:2*n0,n0+1:2*n0)=D(n0+1:2*n0,n0+1:2*n0);
 
 end
 
-if (pid==1 || pid==6 || pid==8 || pid==9 || pid==11 || pid==13 || pid==14 || pid==15 || pid==17 || pid==12 || pid==16)
-    title_mess=sprintf('%s%d\n','Sparse graph k = ',nn);
-else
-    title_mess='Sparse graph';
-end
+title_mess=sprintf('%s%d\n','Sparse graph k = ',nn);
 
 figure(length(problem)+1)
 spy(Dsp,'.k')
@@ -762,6 +888,9 @@ fileName=sprintf('%s.mtx',problem{pid});
 mmwrite(fileName,DspF);
 
 fileNamePer=sprintf('%s-demo-perpl.mtx',problem{pid});
+if (pid==16) 
+    X=sparse(X);
+end
 mmwrite(fileNamePer,X);
 
 % run following lines to copy files to folder pluto data

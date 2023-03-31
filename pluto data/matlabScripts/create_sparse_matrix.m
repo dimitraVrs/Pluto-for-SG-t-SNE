@@ -231,6 +231,8 @@ switch problem{pid}
         cmap=colormap;
         writematrix(cmap,txtName);
 
+        copyfile(txtName,'../')
+
         figure(100)
         scatter(X(:,1),X(:,2),eps,L,'.');
         axis equal off
@@ -469,6 +471,8 @@ switch problem{pid}
         cmap=colormap;
         writematrix(cmap,txtName);
 
+        copyfile(txtName,'../')
+
         D = similarityMatrix(X,n);
 
         % sparse matrix
@@ -507,10 +511,14 @@ switch problem{pid}
         cmap=colormap;
         writematrix(cmap,txtName);
 
+        copyfile(txtName,'../')
+
         % write L in txt file to use the same in Julia
         txtName2=sprintf('L-%s.txt',problem{pid});
         cmap=colormap;
         writematrix(L,txtName2);
+
+        copyfile(txtName2,'../')
 
         D = similarityMatrix(X,n);
 
@@ -552,6 +560,8 @@ switch problem{pid}
         txtName=sprintf('%s.txt',problem{pid});
         cmap=colormap;
         writematrix(cmap,txtName);
+
+        copyfile(txtName,'../')
 
         D = similarityMatrix(X,n);
 
@@ -595,6 +605,8 @@ switch problem{pid}
         txtName=sprintf('%s.txt',problem{pid});
         cmap=colormap;
         writematrix(cmap,txtName);
+
+        copyfile(txtName,'../')
 
         D = similarityMatrix(X,n);
 
@@ -641,6 +653,8 @@ switch problem{pid}
         txtName=sprintf('%s.txt',problem{pid});
         cmap=colormap;
         writematrix(cmap,txtName);
+
+        copyfile(txtName,'../')
 
         D = similarityMatrix(X,n);
 

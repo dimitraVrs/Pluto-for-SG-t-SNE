@@ -14,26 +14,20 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 8d3fc68e-3592-4388-b42b-a99785e97c59
-using PlutoUI
-
 # ╔═╡ fbeb70c5-16a8-432a-8fa1-2762d097ef29
 begin
-			using DelimitedFiles
-			using MatrixMarket
-			using SparseArrays
-			using Plots
-			#using PythonPlot
-			using Distributions
-			using ColorSchemes
-			using Colors
+	using PlutoUI
+	notebookDir=@__DIR__();
+	cd(string(notebookDir,"/pluto data"))
+	
+	using DelimitedFiles
+	using MatrixMarket
+	using SparseArrays
+	using Plots
+	using Distributions
+	using ColorSchemes
+	using Colors
 end
-
-# ╔═╡ c6373307-b528-4657-9825-b72cef998ae1
-notebookDir=@__DIR__();
-
-# ╔═╡ 7060bcbf-32a8-44d0-b6b1-524251b6bfdc
-cd(string(notebookDir,"/pluto data"))
 
 # ╔═╡ 8875ccea-0431-4ca5-8489-680c6f4423a9
 md"""
@@ -174,6 +168,14 @@ md" reload iterations' video : "
 
 # ╔═╡ 51444e6d-cd4c-4950-a047-0f3c4865701d
 #gif(showPlots(yS,sectionData), "$(sectionData)_l$(lamda)_iter$(iterations).gif", fps = 1,show_msg=false)
+
+# ╔═╡ d399bf4b-75a7-4874-9875-4c2166c624a2
+md"""
+## Notebook Setup
+
+Please do not modify
+"""
+	
 
 # ╔═╡ 304ae7c3-12a8-4d34-b6b9-a7bedbc4c918
 #----------------------- FUNCTIONS' DECLARATIONS -----------------
@@ -500,7 +502,7 @@ Colors = "~0.12.10"
 Distributions = "~0.25.80"
 MatrixMarket = "~0.3.1"
 Plots = "~1.31.7"
-PlutoUI = "~0.7.39"
+PlutoUI = "~0.7.50"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -509,7 +511,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "e966d1ac046901d6e7a90571e26d035644650bc7"
+project_hash = "0dfec1dddcad54c7587b6d4af3badcb19b4d47d8"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -989,6 +991,11 @@ git-tree-sha1 = "5d4d2d9904227b8bd66386c1138cf4d5ffa826bf"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "0.4.9"
 
+[[deps.MIMEs]]
+git-tree-sha1 = "65f28ad4b594aebe22157d6fac869786a255b7eb"
+uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
+version = "0.1.4"
+
 [[deps.MacroTools]]
 deps = ["Markdown", "Random"]
 git-tree-sha1 = "3d3e902b31198a27340d0bf00d6ac452866021cf"
@@ -1136,10 +1143,10 @@ uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 version = "1.31.7"
 
 [[deps.PlutoUI]]
-deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
-git-tree-sha1 = "8d1f54886b9037091edf146b517989fc4a09efec"
+deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
+git-tree-sha1 = "5bb5129fdd62a2bbbe17c2756932259acf467386"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.39"
+version = "0.7.50"
 
 [[deps.Preferences]]
 deps = ["TOML"]
@@ -1346,9 +1353,9 @@ uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
 version = "0.9.8"
 
 [[deps.Tricks]]
-git-tree-sha1 = "6bac775f2d42a611cdfcd1fb217ee719630c4175"
+git-tree-sha1 = "aadb748be58b492045b4f56166b5188aa63ce549"
 uuid = "410a4b4d-49e4-4fbc-ab6d-cb71b17b3775"
-version = "0.1.6"
+version = "0.1.7"
 
 [[deps.URIs]]
 git-tree-sha1 = "e59ecc5a41b000fa94423a578d29290c7266fc10"
@@ -1599,13 +1606,9 @@ version = "1.4.1+0"
 """
 
 # ╔═╡ Cell order:
-# ╠═8d3fc68e-3592-4388-b42b-a99785e97c59
-# ╠═c6373307-b528-4657-9825-b72cef998ae1
-# ╠═7060bcbf-32a8-44d0-b6b1-524251b6bfdc
-# ╠═fbeb70c5-16a8-432a-8fa1-2762d097ef29
 # ╟─8875ccea-0431-4ca5-8489-680c6f4423a9
-# ╠═f0a1817b-5716-4f13-a570-7f1aec378b21
-# ╠═3a8f1ce5-ac95-4bf4-8564-9c3a6aa8f203
+# ╟─f0a1817b-5716-4f13-a570-7f1aec378b21
+# ╟─3a8f1ce5-ac95-4bf4-8564-9c3a6aa8f203
 # ╟─362cbcb7-85e1-436d-9c77-fe352c2000a2
 # ╟─f8bfc6d5-0cec-4373-b0ab-09eb71220995
 # ╟─db6bd34a-e111-4532-ad7a-d425d05671bf
@@ -1630,6 +1633,8 @@ version = "1.4.1+0"
 # ╟─d79a33b1-f8ed-4a56-b9d4-5d63e1d018c9
 # ╟─e9c48d1c-1906-4d7d-9c9e-8e10c0fac80d
 # ╟─51444e6d-cd4c-4950-a047-0f3c4865701d
+# ╟─d399bf4b-75a7-4874-9875-4c2166c624a2
+# ╠═fbeb70c5-16a8-432a-8fa1-2762d097ef29
 # ╟─304ae7c3-12a8-4d34-b6b9-a7bedbc4c918
 # ╟─216e2378-e270-404d-b218-29946be98cdc
 # ╟─ad59f7db-bd17-41b7-b1a7-b1431c914d0d

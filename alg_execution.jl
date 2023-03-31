@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.17
+# v0.19.22
 
 using Markdown
 using InteractiveUtils
@@ -14,56 +14,40 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ 8d3fc68e-3592-4388-b42b-a99785e97c59
-using PlutoUI
-
 # ╔═╡ fbeb70c5-16a8-432a-8fa1-2762d097ef29
 begin
-			using DelimitedFiles
-			using MatrixMarket
-			using SparseArrays
-			using Plots
-			#using PythonPlot
-			using Distributions
-			using ColorSchemes
-			using Colors
+	using PlutoUI
+	notebookDir=@__DIR__();
+	cd(string(notebookDir,"/pluto data"))
+	
+	using DelimitedFiles
+	using MatrixMarket
+	using SparseArrays
+	using Plots
+	using Distributions
+	using ColorSchemes
+	using Colors
 end
 
-# ╔═╡ c6373307-b528-4657-9825-b72cef998ae1
-notebookDir=@__DIR__();
-
-# ╔═╡ 7060bcbf-32a8-44d0-b6b1-524251b6bfdc
-cd(string(notebookDir,"/pluto data"))
-
-# ╔═╡ 19946165-d0f9-44b0-85f2-97772e3d2b2e
-#pwd()
-
-# ╔═╡ e7ecb71d-ec3b-47c7-97dc-4c0d989b0500
-#cd("/home/dimitra/alg") #replace path with the directory of the algorithm
-
-# ╔═╡ e0ba4df8-6f5b-4200-874a-42d79adfd173
-#cd("/home/dimitra/.julia/pluto_notebooks")
-
-# ╔═╡ b58f0a42-0d6a-4d4c-a1df-e18216aa271b
-#--------------------------------------------------------------------
-
-# ╔═╡ e3ddabac-af16-4101-bfe9-e99bd1af963d
-#------- SG-t-SNE EXECUTION -------------------------------------
-
-# ╔═╡ 9fa169d9-c685-49f8-b716-cfec1d80570a
-#--------------------------------------------------------------------
-
 # ╔═╡ 8875ccea-0431-4ca5-8489-680c6f4423a9
-md" Select algorithm parameters! "
+md"""
+# How to Use SG-t-SNE-Pi Effectively
+
+This is a Pluto notebook inspired by the web site [How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/) to help a user explore the visualization of high-dimensional data, using SG-T-SNE-Pi more effectively.
+
+## Select dataset and processing parameters: 
+"""
 
 # ╔═╡ f0a1817b-5716-4f13-a570-7f1aec378b21
-md" Select input data : "
+md"""
+Select dataset: 
+"""
 
 # ╔═╡ 3a8f1ce5-ac95-4bf4-8564-9c3a6aa8f203
-@bind dataChoice Select(["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","simplex","uniform","grid","two rings"])
-
-# ╔═╡ 61d87550-5be7-4fdb-89ed-b683ff29b0f6
-choices=["different sizes","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","simplex","uniform","grid","two rings"];
+begin
+	choices = ["Dataset:","different distances","same distance","concentric circles","trefoil knot","linked rings","unlinked rings","ellipse","parallel lines","noise","circle","random circle","orthogonal steps","random walk","random jump","simplex","uniform","grid","two rings"];
+	@bind dataChoice Select(choices)
+end
 
 # ╔═╡ 362cbcb7-85e1-436d-9c77-fe352c2000a2
 begin
@@ -119,7 +103,7 @@ md" Iterations : "
 @bind iterations PlutoUI.Slider(1000:500:5000)
 
 # ╔═╡ 1fbc95a2-7c95-4482-9488-166fe9e37885
-md" iterations selected = $iterations "
+md" iterations selected = $iterations for $dataChoice"
 
 # ╔═╡ 10e961b1-3c40-453b-853b-c0e4037ff9af
 md" demo : "
@@ -184,6 +168,14 @@ md" reload iterations' video : "
 
 # ╔═╡ 51444e6d-cd4c-4950-a047-0f3c4865701d
 #gif(showPlots(yS,sectionData), "$(sectionData)_l$(lamda)_iter$(iterations).gif", fps = 1,show_msg=false)
+
+# ╔═╡ d399bf4b-75a7-4874-9875-4c2166c624a2
+md"""
+## Notebook Setup
+
+Please do not modify
+"""
+	
 
 # ╔═╡ 304ae7c3-12a8-4d34-b6b9-a7bedbc4c918
 #----------------------- FUNCTIONS' DECLARATIONS -----------------
@@ -510,15 +502,16 @@ Colors = "~0.12.10"
 Distributions = "~0.25.80"
 MatrixMarket = "~0.3.1"
 Plots = "~1.31.7"
-PlutoUI = "~0.7.39"
+PlutoUI = "~0.7.50"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.8.5"
 manifest_format = "2.0"
+project_hash = "0dfec1dddcad54c7587b6d4af3badcb19b4d47d8"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -534,6 +527,7 @@ version = "3.4.0"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
+version = "1.1.1"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -610,6 +604,7 @@ version = "3.46.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "1.0.1+0"
 
 [[deps.Contour]]
 git-tree-sha1 = "d05d9e7b7aedff4e5b51a029dced05cfb6125781"
@@ -663,8 +658,9 @@ uuid = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
 version = "0.9.1"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+version = "1.6.0"
 
 [[deps.DualNumbers]]
 deps = ["Calculus", "NaNMath", "SpecialFunctions"]
@@ -700,6 +696,9 @@ deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers",
 git-tree-sha1 = "74faea50c1d007c85837327f6775bea60b5492dd"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
 version = "4.4.2+2"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "Statistics"]
@@ -906,10 +905,12 @@ version = "0.15.16"
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
+version = "0.6.3"
 
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+version = "7.84.0+0"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -918,6 +919,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
+version = "1.10.2+0"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -989,6 +991,11 @@ git-tree-sha1 = "5d4d2d9904227b8bd66386c1138cf4d5ffa826bf"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "0.4.9"
 
+[[deps.MIMEs]]
+git-tree-sha1 = "65f28ad4b594aebe22157d6fac869786a255b7eb"
+uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
+version = "0.1.4"
+
 [[deps.MacroTools]]
 deps = ["Markdown", "Random"]
 git-tree-sha1 = "3d3e902b31198a27340d0bf00d6ac452866021cf"
@@ -1014,6 +1021,7 @@ version = "1.1.4"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.0+0"
 
 [[deps.Measures]]
 git-tree-sha1 = "e498ddeee6f9fdb4551ce855a46f54dbd900245f"
@@ -1031,6 +1039,7 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+version = "2022.2.1"
 
 [[deps.NaNMath]]
 deps = ["OpenLibm_jll"]
@@ -1040,6 +1049,7 @@ version = "1.0.1"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
+version = "1.2.0"
 
 [[deps.Ogg_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1050,10 +1060,12 @@ version = "1.3.5+1"
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+version = "0.3.20+0"
 
 [[deps.OpenLibm_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "05823500-19ac-5b8b-9628-191a04bc5112"
+version = "0.8.1+0"
 
 [[deps.OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1081,6 +1093,7 @@ version = "1.4.1"
 [[deps.PCRE2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "efcefdf7-47ab-520b-bdef-62a2eaa19f15"
+version = "10.40.0+0"
 
 [[deps.PCRE_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1109,6 +1122,7 @@ version = "0.40.1+0"
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+version = "1.8.0"
 
 [[deps.PlotThemes]]
 deps = ["PlotUtils", "Statistics"]
@@ -1129,10 +1143,10 @@ uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 version = "1.31.7"
 
 [[deps.PlutoUI]]
-deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
-git-tree-sha1 = "8d1f54886b9037091edf146b517989fc4a09efec"
+deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
+git-tree-sha1 = "5bb5129fdd62a2bbbe17c2756932259acf467386"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.39"
+version = "0.7.50"
 
 [[deps.Preferences]]
 deps = ["TOML"]
@@ -1206,6 +1220,7 @@ version = "0.4.0+0"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[deps.Scratch]]
 deps = ["Dates"]
@@ -1302,6 +1317,7 @@ uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+version = "1.0.0"
 
 [[deps.TableTraits]]
 deps = ["IteratorInterfaceExtensions"]
@@ -1318,6 +1334,7 @@ version = "1.7.0"
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+version = "1.10.1"
 
 [[deps.TensorCore]]
 deps = ["LinearAlgebra"]
@@ -1336,9 +1353,9 @@ uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
 version = "0.9.8"
 
 [[deps.Tricks]]
-git-tree-sha1 = "6bac775f2d42a611cdfcd1fb217ee719630c4175"
+git-tree-sha1 = "aadb748be58b492045b4f56166b5188aa63ce549"
 uuid = "410a4b4d-49e4-4fbc-ab6d-cb71b17b3775"
-version = "0.1.6"
+version = "0.1.7"
 
 [[deps.URIs]]
 git-tree-sha1 = "e59ecc5a41b000fa94423a578d29290c7266fc10"
@@ -1516,6 +1533,7 @@ version = "1.4.0+3"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.12+3"
 
 [[deps.Zstd_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1538,6 +1556,7 @@ version = "0.15.1+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+version = "5.1.1+0"
 
 [[deps.libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1560,10 +1579,12 @@ version = "1.3.7+1"
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
+version = "1.48.0+0"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
+version = "17.4.0+0"
 
 [[deps.x264_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1585,24 +1606,13 @@ version = "1.4.1+0"
 """
 
 # ╔═╡ Cell order:
-# ╟─8d3fc68e-3592-4388-b42b-a99785e97c59
-# ╟─c6373307-b528-4657-9825-b72cef998ae1
-# ╟─7060bcbf-32a8-44d0-b6b1-524251b6bfdc
-# ╟─19946165-d0f9-44b0-85f2-97772e3d2b2e
-# ╟─e7ecb71d-ec3b-47c7-97dc-4c0d989b0500
-# ╟─e0ba4df8-6f5b-4200-874a-42d79adfd173
-# ╟─fbeb70c5-16a8-432a-8fa1-2762d097ef29
-# ╠═b58f0a42-0d6a-4d4c-a1df-e18216aa271b
-# ╠═e3ddabac-af16-4101-bfe9-e99bd1af963d
-# ╠═9fa169d9-c685-49f8-b716-cfec1d80570a
 # ╟─8875ccea-0431-4ca5-8489-680c6f4423a9
 # ╟─f0a1817b-5716-4f13-a570-7f1aec378b21
 # ╟─3a8f1ce5-ac95-4bf4-8564-9c3a6aa8f203
-# ╟─61d87550-5be7-4fdb-89ed-b683ff29b0f6
 # ╟─362cbcb7-85e1-436d-9c77-fe352c2000a2
 # ╟─f8bfc6d5-0cec-4373-b0ab-09eb71220995
 # ╟─db6bd34a-e111-4532-ad7a-d425d05671bf
-# ╟─1fbc95a2-7c95-4482-9488-166fe9e37885
+# ╠═1fbc95a2-7c95-4482-9488-166fe9e37885
 # ╟─10e961b1-3c40-453b-853b-c0e4037ff9af
 # ╟─f3334292-08d4-4254-acab-dbc5d537639e
 # ╟─f331562a-a104-49aa-af26-bdff42d4427f
@@ -1623,6 +1633,8 @@ version = "1.4.1+0"
 # ╟─d79a33b1-f8ed-4a56-b9d4-5d63e1d018c9
 # ╟─e9c48d1c-1906-4d7d-9c9e-8e10c0fac80d
 # ╟─51444e6d-cd4c-4950-a047-0f3c4865701d
+# ╟─d399bf4b-75a7-4874-9875-4c2166c624a2
+# ╠═fbeb70c5-16a8-432a-8fa1-2762d097ef29
 # ╟─304ae7c3-12a8-4d34-b6b9-a7bedbc4c918
 # ╟─216e2378-e270-404d-b218-29946be98cdc
 # ╟─ad59f7db-bd17-41b7-b1a7-b1431c914d0d

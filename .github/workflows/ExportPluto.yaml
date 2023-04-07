@@ -58,6 +58,8 @@ jobs:
                     Export_baked_notebookfile=false,
                     Export_baked_state=false,
                     # more parameters can go here
+		    Export_offer_binder=false
+
                   )'
 
 

@@ -53,7 +53,7 @@ jobs:
 
                   import PlutoSliderServer
 
-                  PlutoSliderServer.run_notebook("./simple-examples.jl",Export_offer_binder=false)'
+                  PlutoSliderServer.run_notebook("./test_running.jl",Export_offer_binder=false)'
                   
 
 

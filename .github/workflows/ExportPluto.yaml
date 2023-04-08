@@ -53,8 +53,8 @@ jobs:
 
                   import PlutoSliderServer
 
-                  PlutoSliderServer.run_notebook("./simple-examples.jl",Export_offer_binder=false)
-                  )'
+                  PlutoSliderServer.run_notebook("./simple-examples.jl",Export_offer_binder=false)'
+                  
 
 
             - name: Deploy to gh-pages

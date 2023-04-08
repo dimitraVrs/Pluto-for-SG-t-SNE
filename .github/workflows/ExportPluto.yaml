@@ -53,11 +53,8 @@ jobs:
 
                   import PlutoSliderServer
 
-                 # PlutoSliderServer.github_action(".";
-                 #   Export_cache_dir="pluto_state_cache",
-                   # Export_baked_notebookfile=false,
-                   # Export_baked_state=false,Export_offer_binder=false)
- PlutoSliderServer.run_directory(".",Export_offer_binder=false)'
+                  PlutoSliderServer.run_notebook("./simple-examples.jl",Export_offer_binder=false)
+                  )'
 
 
             - name: Deploy to gh-pages

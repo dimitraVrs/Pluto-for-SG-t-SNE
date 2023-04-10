@@ -15,7 +15,7 @@ This folder can be created from the Pluto notebook so as (png) files of input an
 
 #### Prerequisites
 - [Julia](https://julialang.org/downloads/)
-- [Pluto.jl](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)
+- [Pluto.jl](https://github.com/fonsp/Pluto.jl#lets-do-it)
 
 1. Clone Pluto-for-SG-t-SNE repository:<br>
 

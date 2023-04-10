@@ -28,7 +28,7 @@ git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE
 ```
 import Pluto
 ```
-<br>
+
 ```
 Pluto.run()
 ```
@@ -53,8 +53,6 @@ git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE
 ```
 using PlutoSliderServer
 ```
-
-<br>
 
 ```
 PlutoSliderServer.run_notebook(path_to_notebook,Export_offer_binder=false)

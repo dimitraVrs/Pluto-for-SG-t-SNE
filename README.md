@@ -11,11 +11,11 @@ The process of creation of the initial input points (before the graph creation) 
 ### pluto data folder:
 This folder can be created from the Pluto notebook so as (png) files of input and output data are be written here.
 
-### Instructions to run the Pluto notebook from Pluto
+### Instructions to run the Pluto notebook from Pluto:
 
 #### Prerequisites
 - [Julia](https://julialang.org/downloads/)
-- [Pluto.jl](https://github.com/fonsp/Pluto.jl)
+- [Pluto.jl](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)
 
 1. Clone Pluto-for-SG-t-SNE repository:<br>
 
@@ -29,16 +29,15 @@ git clone --recursive https://github.com/dimitraVrs/Pluto-for-SG-t-SNE
 import Pluto
 ```
 <br>
-
 ```
 Pluto.run()
 ```
 
 4. In section "Open a notebook" choose the notebook.
 
-### Instructions to run the Pluto notebook using PlutoSliderServer
+### Instructions to run the Pluto notebook using PlutoSliderServer:
 
-#### Prerequisites
+#### Prerequisites:
 - [Julia](https://julialang.org/downloads/)
 - [PlutoSliderServer.jl](https://github.com/JuliaPluto/PlutoSliderServer.jl)
 

@@ -17,12 +17,7 @@ end
 # ╔═╡ fbeb70c5-16a8-432a-8fa1-2762d097ef29
 begin
 	using PlutoUI
-	using SGtSNEpi, CairoMakie, Makie
-	
-	using SparseArrays
-	using ColorSchemes
-	using Colors
-
+	using SGtSNEpi, CairoMakie, Makie	
 	using Distributions, Random
 	using Plots
 end
@@ -46,21 +41,53 @@ Select the distance between two sets of points that form two parallel lines
 
 """
 
+# ╔═╡ 3c7763de-50bb-4b2e-a0da-1f914e8588f3
+md" distance selected= $displacement "
+
 # ╔═╡ ff9cbd25-8039-4ba4-bff3-1b50db8ba67b
 begin
 	
 	P = vcat(hcat(rand(100), zeros(100)),
 		     hcat(rand(100), 0.5 * ones(100)), 
 		     hcat(rand(100), displacement .+ 0.5 * ones(100)))
-	A = pointcloud2graph(P)
+	#A = pointcloud2graph(P)
 	L = vcat(ones(Int64, 100), 2 .* ones(Int64, 100), 3 .* ones(Int64, 100))
 
 	show_embedding( P, L; res=(400, 400), mrk_size=8, size_label=10 )
+
 end
+
+# ╔═╡ ca038f17-1c7f-45f2-99be-c17e018383c5
+md" Select algorithm parameters: "
+
+# ╔═╡ c23b5156-7041-4a6f-87ee-748d64832f37
+@bind rangeL Radio(["λ < 1", "λ > 1"], default="λ > 1")
+
+# ╔═╡ 695421f8-3554-4879-88d2-dfdd983153f9
+if cmp(rangeL,"λ > 1")==0
+		valuesL=2:200
+else
+		valuesL=0.1:0.01:0.9
+end;
+
+# ╔═╡ 16bf61fc-8991-47df-b7e4-a2bec5cf0f73
+md"
+λ: $(valuesL[1]) $(@bind lambdaL PlutoUI.Slider(valuesL)) $(valuesL[length(valuesL)])
+"
+
+# ╔═╡ 1a37b98c-b66e-438f-be2d-1bfbbbf6a610
+md" λ selected= $lambdaL "
+
+# ╔═╡ c440c868-90a2-4cd6-b40d-27f9550eabc2
+md" perplexity: 5 $(@bind uL PlutoUI.Slider(5:50)) 50 "
+
+# ╔═╡ 94cdb882-f901-4f6f-a797-a62731e32db9
+md" perplexity selected= $uL "
 
 # ╔═╡ d558351b-1330-4817-80e3-ef30371346af
 begin
-	Y = Y = sgtsnepi(A)
+	#Y = Y = sgtsnepi(A)
+	Y = sgtsnepi(pointcloud2graph(P,uL),λ=lambdaL)
 	show_embedding( Y, L; res = (400, 400), mrk_size=8, size_label=10 )
 end
 
@@ -77,56 +104,40 @@ begin
 	for j=1:nE
 		XE[:,j]=XE[:,j]/j
 	end
-	Plots.scatter(XE[:,1],XE[:,2];legend=false, markercolor=:blue,markersize = 3)
+	Plots.scatter(XE[:,1],XE[:,2];legend=false,markercolor=:blue,markersize=3)
 end
 
 # ╔═╡ 563a3f7a-266a-4ab6-bb62-b030e802c92b
-md" Select algorithm parameters! "
+md" Select algorithm parameters: "
 
 # ╔═╡ da9a4b4f-8fcc-4f48-8fc1-3c34767bd45a
 @bind rangeE Radio(["λ < 1", "λ > 1"], default="λ > 1")
 
 # ╔═╡ 162b8054-7370-440e-9710-6fd1024c62c2
-begin
-	rangeE
-	if cmp(rangeE,"λ > 1")==0
+if cmp(rangeE,"λ > 1")==0
 		valuesE=2:200
-	else
+else
 		valuesE=0.1:0.01:0.9
-	end;
 end;
 
 # ╔═╡ c83ca8fc-b3d6-4fec-b085-b0043026d96d
-begin
-	rangeE
-	md"""
-	λ:
-	$(valuesE[1]) $(@bind lambdaE PlutoUI.Slider(valuesE)) $(valuesE[length(valuesE)])
-	"""
-end
+md"
+λ: $(valuesE[1]) $(@bind lambdaE PlutoUI.Slider(valuesE)) $(valuesE[length(valuesE)])
+"
 
 # ╔═╡ 101f4199-b807-48f3-88b6-aa5c7034d106
-begin
-	lambdaE
-	md" λ selected= $lambdaE "
-end
+md" λ selected= $lambdaE "
 
 # ╔═╡ e8ec7fd1-6998-4c44-86e7-e38e710252e5
-md"""
-perplexity:
-5 $(@bind uE PlutoUI.Slider(5:50)) 50
-"""
+md" perplexity: 5 $(@bind uE PlutoUI.Slider(5:50)) 50 "
 
 # ╔═╡ a67f49ea-0c69-46ce-b7f3-e7aae72e7391
-begin
-	uE
-	md" perplexity selected= $uE "
-end
+md" perplexity selected= $uE "
 
 # ╔═╡ 9dbcc007-1cdf-4b32-a6b8-ad2a81f1fd2b
 begin
 	YE = sgtsnepi(pointcloud2graph(XE,uE),λ=lambdaE)
-	Plots.scatter(YE[:,1],YE[:,2];legend=false, markercolor=:blue,markersize = 3)
+	Plots.scatter(YE[:,1],YE[:,2];legend=false,markercolor=:blue,markersize=3)
 end
 
 # ╔═╡ 0de02eb8-da2b-4682-a8da-a88c23958305
@@ -159,47 +170,31 @@ begin
 end
 
 # ╔═╡ ac0ebd9c-a070-4729-801c-fd9d70945c2e
-md" Select algorithm parameters! "
+md" Select algorithm parameters: "
 
 # ╔═╡ f5db9226-8058-4a9d-b466-b8c7c0f7b703
 @bind range Radio(["λ < 1", "λ > 1"], default="λ > 1")
 
 # ╔═╡ 6037423c-6de0-4213-8a44-7abc9a0dc76e
-begin
-	range
-	if cmp(range,"λ > 1")==0
+if cmp(range,"λ > 1")==0
 		values=2:200
-	else
+else
 		values=0.1:0.01:0.9
-	end;
 end;
 
 # ╔═╡ 1f980a76-8295-496e-a4a9-09505fef4b11
-begin
-	range
-	md"""
-	λ:
-	$(values[1]) $(@bind lambda PlutoUI.Slider(values)) $(values[length(values)])
-	"""
-end
+md"
+λ: $(values[1]) $(@bind lambda PlutoUI.Slider(values)) $(values[length(values)])
+"
 
 # ╔═╡ aee7c9fd-3106-4cd4-b9a0-379ddd297413
-begin
-	lambda
-	md" λ selected= $lambda "
-end
+md" λ selected= $lambda "
 
 # ╔═╡ f1e369ea-e099-4592-86ae-f7ca01cc1363
-md"""
-perplexity:
-5 $(@bind u PlutoUI.Slider(5:50)) 50
-"""
+md" perplexity: 5 $(@bind u PlutoUI.Slider(5:50)) 50"
 
 # ╔═╡ d87ef377-160c-4b58-99ec-414653f7d3dd
-begin
-	u
-	md" perplexity selected= $u "
-end
+md" perplexity selected= $u "
 
 # ╔═╡ 7300d2db-90bd-490b-a4fb-36800642dab7
 begin
@@ -216,21 +211,13 @@ md"""
 md" Select the size of the large cluster. The small cluster has size=1. "
 
 # ╔═╡ 64b78913-c35a-40cf-b1c9-b2a464a1a751
-md"""
-size 1:
-1 $(@bind size1 PlutoUI.Slider(1:50)) 50
-"""
+md" 1 $(@bind size1 PlutoUI.Slider(1:50)) 50 "
 
 # ╔═╡ 9eb27e79-480a-44eb-851b-c3ec42ce0806
-begin
-	size1
-	md" size 1 selected= $size1 "
-end
+md" size selected= $size1 "
 
 # ╔═╡ 4e0ca908-f413-4a47-8788-eff05b0a8c21
 begin
-	size1
-	
 	n0=200
 	Random.seed!(123)
 	X1Size=Random.rand(Normal(0,size1),n0,2)
@@ -243,57 +230,40 @@ begin
 	Plots.scatter(X1Size[:,1],X1Size[:,2]; label="cluster 1",markercolor=:blue,markersize = 3)
 	Plots.scatter!(X2Size[:,1],X2Size[:,2];label="cluster 2",markercolor=:orange,markersize = 3)
 	Plots.scatter!(legend=:outerbottom, legendcolumns=2)
-
 end
 
 # ╔═╡ b76b8626-2069-4508-b9d6-a23e9f02f450
-md" Select algorithm parameters! "
+md" Select algorithm parameters: "
 
 # ╔═╡ 3bec83fe-16f6-448f-b6ea-a44cdbf47bc9
 @bind rangeSize Radio(["λ < 1", "λ > 1"], default="λ > 1")
 
 # ╔═╡ 91534b7c-3641-4978-a8a2-c840dcda31e8
-begin
-	rangeSize
-	if cmp(rangeSize,"λ > 1")==0
+if cmp(rangeSize,"λ > 1")==0
 		valuesSize=2:200
-	else
+else
 		valuesSize=0.1:0.01:0.9
-	end;
 end;
 
 # ╔═╡ 2cac3251-13cb-4066-8d22-bb962140833d
-begin
-	rangeSize
-	md"""
-	λ:
-	$(valuesSize[1]) $(@bind lambdaSize PlutoUI.Slider(valuesSize)) $(valuesSize[length(valuesSize)])
-	"""
-end
-
-# ╔═╡ 73385796-a95b-4fbc-b858-82a535978b29
-begin
-	lambdaSize
-	md" λ selected= $lambdaSize "
-end
-
-# ╔═╡ 1ffb0d13-e624-4925-93f5-9a3d19acfd98
 md"""
-perplexity:
-5 $(@bind uSize PlutoUI.Slider(5:50)) 50
+λ: $(valuesSize[1]) $(@bind lambdaSize PlutoUI.Slider(valuesSize)) $(valuesSize[length(valuesSize)])
 """
 
+# ╔═╡ 73385796-a95b-4fbc-b858-82a535978b29
+md" λ selected= $lambdaSize "
+
+# ╔═╡ 1ffb0d13-e624-4925-93f5-9a3d19acfd98
+md" perplexity: 5 $(@bind uSize PlutoUI.Slider(5:50)) 50 "
+
 # ╔═╡ 6d81f8bc-1c33-4f18-b47f-a0c00c4dfb54
-begin
-	uSize
-	md" perplexity selected= $uSize "
-end
+md" perplexity selected= $uSize "
 
 # ╔═╡ 0d2b043b-eb19-490c-9528-49a34ab40932
 begin
 	YSize = sgtsnepi(pointcloud2graph(XSize,uSize),λ=lambdaSize)
-	Plots.scatter(YSize[1:n0,1],YSize[1:n0,2];label="cluster 1", markercolor=:blue,markersize = 3)
-	Plots.scatter!(YSize[n0+1:2*n0,1],YSize[n0+1:2*n0,2];label="cluster 2", markercolor=:orange,markersize = 3)
+	Plots.scatter(YSize[1:n0,1],YSize[1:n0,2];label="cluster 1",markercolor=:blue,markersize=3)
+	Plots.scatter!(YSize[n0+1:2*n0,1],YSize[n0+1:2*n0,2];label="cluster 2",markercolor=:orange,markersize=3)
 
 	Plots.scatter!(legend=:outerbottom, legendcolumns=2)
 end
@@ -304,24 +274,16 @@ md"""
 """
 
 # ╔═╡ 68ce9ebf-dd9f-437f-ad2a-ba0c91a76a72
-md" Select distance of the clusters 1 and 2. Clusters 1 and 3 have distance= 40. "
+md" Select distance of the clusters 1 and 2. Clusters 1 and 3 have distance=40. "
 
 # ╔═╡ cc9af3b2-1604-4a15-9b5c-9d9936019997
-md"""
-distance 1-2:
-10 $(@bind d12 PlutoUI.Slider(10:40)) 40
-"""
+md" 10 $(@bind d12 PlutoUI.Slider(10:40)) 40 "
 
 # ╔═╡ aa0b0bdd-c709-466e-9ee7-9cfbf7266530
-begin
-	d12
-	md" distance 1-2 selected= $d12 "
-end
+md" distance 1-2 selected= $d12 "
 
 # ╔═╡ f91a53ae-1ac7-4d9e-bb9b-048153c8758d
 begin
-	d12
-	
 	n0D=200
 	Random.seed!(123)
 	X1D=Random.rand(Normal(0,1),n0D,2)
@@ -334,66 +296,49 @@ begin
 
 	XD=vcat(X1D,X2D,X3D)
 	
-	Plots.scatter(X1D[:,1],X1D[:,2],label="cluster 1",markercolor=:blue,markersize = 3)
+	Plots.scatter(X1D[:,1],X1D[:,2],label="cluster 1",markercolor=:blue,markersize=3)
 
-	Plots.scatter!(X2D[:,1],X2D[:,2],label="cluster 2",markercolor=:orange,markersize = 3)
+	Plots.scatter!(X2D[:,1],X2D[:,2],label="cluster 2",markercolor=:orange,markersize=3)
 
-	Plots.scatter!(X3D[:,1],X3D[:,2],label="cluster 3",markercolor=:green,markersize = 3)
+	Plots.scatter!(X3D[:,1],X3D[:,2],label="cluster 3",markercolor=:green,markersize=3)
 
 	Plots.scatter!(legend=:outerbottom, legendcolumns=3)
-
 end
 
 # ╔═╡ 9406872f-1ce3-48c2-b411-c7e850782468
-md" Select algorithm parameters! "
+md" Select algorithm parameters: "
 
 # ╔═╡ 39e30faf-4125-4550-b7a9-ef6e38bc4c8b
 @bind rangeD Radio(["λ < 1", "λ > 1"], default="λ > 1")
 
 # ╔═╡ c9fd1dfa-5991-49be-bdf5-921fed172d49
-begin
-	rangeD
-	if cmp(rangeD,"λ > 1")==0
+if cmp(rangeD,"λ > 1")==0
 		valuesD=2:200
-	else
+else
 		valuesD=0.1:0.01:0.9
-	end;
 end;
 
 # ╔═╡ efe5bda7-a4b9-4ebe-a8f5-09fa83f2f5a0
-begin
-	rangeD
-	md"""
-	λ:
-	$(valuesD[1]) $(@bind lambdaD PlutoUI.Slider(valuesD)) $(valuesD[length(valuesD)])
-	"""
-end
+md"
+λ: $(valuesD[1]) $(@bind lambdaD PlutoUI.Slider(valuesD)) $(valuesD[length(valuesD)])
+"
 
 # ╔═╡ 6e9aa731-a78d-4e0d-8143-9e5960e4e5c6
-begin
-	lambdaD
-	md" λ selected= $lambdaD "
-end
+md" λ selected= $lambdaD "
 
 # ╔═╡ fada11e4-23aa-4a2d-802d-e5df397f0081
-md"""
-perplexity:
-5 $(@bind uD PlutoUI.Slider(5:50)) 50
-"""
+md" perplexity: 5 $(@bind uD PlutoUI.Slider(5:50)) 50 "
 
 # ╔═╡ f35a538a-6a9f-40a9-b14e-ceef120445dd
-begin
-	uD
-	md" perplexity selected= $uD "
-end
+md" perplexity selected= $uD "
 
 # ╔═╡ b39eb018-0d4b-4b63-9863-d03023dee213
 begin
 	YD = sgtsnepi(pointcloud2graph(XD,uD),λ=lambdaD)
 	
-	Plots.scatter(YD[1:n0D,1],YD[1:n0D,2];label="cluster 1", markercolor=:blue,markersize = 3)
-	Plots.scatter!(YD[n0D+1:2*n0D,1],YD[n0D+1:2*n0D,2];label="cluster 2", markercolor=:orange,markersize = 3)
-	Plots.scatter!(YD[2*n0D+1:3*n0D,1],YD[2*n0D+1:3*n0D,2];label="cluster 3", markercolor=:green,markersize = 3)
+	Plots.scatter(YD[1:n0D,1],YD[1:n0D,2];label="cluster 1",markercolor=:blue,markersize=3)
+	Plots.scatter!(YD[n0D+1:2*n0D,1],YD[n0D+1:2*n0D,2];label="cluster 2",markercolor=:orange,markersize=3)
+	Plots.scatter!(YD[2*n0D+1:3*n0D,1],YD[2*n0D+1:3*n0D,2];label="cluster 3",markercolor=:green,markersize=3)
 
 	Plots.scatter!(legend=:outerbottom, legendcolumns=3)
 end
@@ -413,60 +358,44 @@ begin
 
 	XCon=vcat(X1Con,X2Con)
 	
-	Plots.scatter(X1Con[:,1],X1Con[:,2]; label="cluster 1",markercolor=:blue,markersize = 3)
-	Plots.scatter!(X2Con[:,1],X2Con[:,2];label="cluster 2",markercolor=:orange,markersize = 3)
+	Plots.scatter(X1Con[:,1],X1Con[:,2]; label="cluster 1",markercolor=:blue,markersize=3)
+	Plots.scatter!(X2Con[:,1],X2Con[:,2];label="cluster 2",markercolor=:orange,markersize=3)
 	Plots.scatter!(legend=:outerbottom, legendcolumns=2)
 
 end
 
 # ╔═╡ 574fb8bd-3874-4893-8831-9560c74832cd
-md" Select algorithm parameters! "
+md" Select algorithm parameters: "
 
 # ╔═╡ 6d89e859-fdc2-4be0-b7c5-6a6477dc0dd9
 @bind rangeCon Radio(["λ < 1", "λ > 1"], default="λ > 1")
 
 # ╔═╡ 1dd81e47-7c84-4de7-be27-fb68e6632ff1
-begin
-	rangeCon
-	if cmp(rangeCon,"λ > 1")==0
+if cmp(rangeCon,"λ > 1")==0
 		valuesCon=2:200
-	else
+else
 		valuesCon=0.1:0.01:0.9
-	end;
 end;
 
 # ╔═╡ 8f4e7ee2-ed04-450b-a8df-f14821815724
-begin
-	rangeCon
-	md"""
-	λ:
-	$(valuesCon[1]) $(@bind lambdaCon PlutoUI.Slider(valuesCon)) $(valuesCon[length(valuesCon)])
-	"""
-end
-
-# ╔═╡ 1ebc940a-e911-478b-938d-848d3371f528
-begin
-	lambdaCon
-	md" λ selected= $lambdaCon "
-end
-
-# ╔═╡ 3496e66d-37aa-48de-809b-b214bc43169c
 md"""
-perplexity:
-5 $(@bind uCon PlutoUI.Slider(5:50)) 50
+λ: $(valuesCon[1]) $(@bind lambdaCon PlutoUI.Slider(valuesCon)) $(valuesCon[length(valuesCon)])
 """
 
+# ╔═╡ 1ebc940a-e911-478b-938d-848d3371f528
+md" λ selected= $lambdaCon "
+
+# ╔═╡ 3496e66d-37aa-48de-809b-b214bc43169c
+md" perplexity: 5 $(@bind uCon PlutoUI.Slider(5:50)) 50 "
+
 # ╔═╡ 5a7c9ef7-da81-4ce4-acea-51a70bb94531
-begin
-	uCon
-	md" perplexity selected= $uCon "
-end
+md" perplexity selected= $uCon "
 
 # ╔═╡ f575d6db-8d66-4827-adca-b8e9d7771842
 begin
 	YCon = sgtsnepi(pointcloud2graph(XCon,uCon),λ=lambdaCon)
-	Plots.scatter(YCon[1:n0Con,1],YCon[1:n0Con,2];label="cluster 1", markercolor=:blue,markersize = 3)
-	Plots.scatter!(YCon[n0Con+1:2*n0Con,1],YCon[n0Con+1:2*n0Con,2];label="cluster 2", markercolor=:orange,markersize = 3)
+	Plots.scatter(YCon[1:n0Con,1],YCon[1:n0Con,2];label="cluster 1",markercolor=:blue,markersize=3)
+	Plots.scatter!(YCon[n0Con+1:2*n0Con,1],YCon[n0Con+1:2*n0Con,2];label="cluster 2",markercolor=:orange,markersize=3)
 
 	Plots.scatter!(legend=:outerbottom, legendcolumns=2)
 end
@@ -486,59 +415,40 @@ begin
 
 		LTr=t
 
-		Plots.scatter(XTr[:,1],XTr[:,2],markersize = 3,marker_z=LTr,legend=false)
+		Plots.scatter(XTr[:,1],XTr[:,2],markersize=3,marker_z=LTr,legend=false)
 end
 
-# ╔═╡ fd4c58f3-81f5-4814-b57b-7ca309b1ff2c
-#Plots.scatter(XTr[:,1],XTr[:,2],XTr[:,3],markersize = 3,marker_z=LTr,legend=false)
-
 # ╔═╡ afd5a43e-f934-477d-a9bf-174b248dcfe6
-md" Select algorithm parameters! "
+md" Select algorithm parameters: "
 
 # ╔═╡ 2499038e-a9a3-4401-bb4c-702b3380fea0
 @bind rangeTr Radio(["λ < 1", "λ > 1"], default="λ > 1")
 
 # ╔═╡ 3af39e67-e6f5-4e12-9f27-8f819661dded
-begin
-	rangeTr
-	if cmp(rangeTr,"λ > 1")==0
+if cmp(rangeTr,"λ > 1")==0
 		valuesTr=2:200
-	else
+else
 		valuesTr=0.1:0.01:0.9
-	end;
 end;
 
 # ╔═╡ 116a4875-e70b-4c64-b4e7-12e813702c5d
-begin
-	rangeTr
-	md"""
-	λ:
-	$(valuesTr[1]) $(@bind lambdaTr PlutoUI.Slider(valuesTr)) $(valuesTr[length(valuesTr)])
-	"""
-end
-
-# ╔═╡ 672d0417-db11-4232-b423-46a1201ad73b
-begin
-	lambdaTr
-	md" λ selected= $lambdaTr "
-end
-
-# ╔═╡ f2ae0fef-066c-43ed-ab24-3598bab57f31
 md"""
-perplexity:
-5 $(@bind uTr PlutoUI.Slider(5:50)) 50
+λ: $(valuesTr[1]) $(@bind lambdaTr PlutoUI.Slider(valuesTr)) $(valuesTr[length(valuesTr)])
 """
 
+# ╔═╡ 672d0417-db11-4232-b423-46a1201ad73b
+md" λ selected= $lambdaTr "
+
+# ╔═╡ f2ae0fef-066c-43ed-ab24-3598bab57f31
+md" perplexity: 5 $(@bind uTr PlutoUI.Slider(5:50)) 50 "
+
 # ╔═╡ d9972abe-2438-45dd-b580-a648bc4867dc
-begin
-	uTr
-	md" perplexity selected= $uTr "
-end
+md" perplexity selected= $uTr "
 
 # ╔═╡ ac77c4ea-dad5-4184-9134-2fb55f391120
 begin
 	YTr = sgtsnepi(pointcloud2graph(XTr,uTr),λ=lambdaTr)
-	Plots.scatter(YTr[:,1],YTr[:,2],markersize = 3,marker_z=LTr,legend=false)
+	Plots.scatter(YTr[:,1],YTr[:,2],markersize=3,marker_z=LTr,legend=false)
 end
 
 # ╔═╡ 85ba9db6-7858-4ea2-a1d0-f33fa40bf3f4
@@ -550,22 +460,13 @@ md"""
 md" Select the distance of the centers. "
 
 # ╔═╡ 6b6254d0-1f57-4144-9d26-b6b3619447f2
-md"""
-distance:
-1.0 $(@bind dist PlutoUI.Slider(1.0:-0.1:0.0)) 0.0
-"""
+md" 1.0 $(@bind dist PlutoUI.Slider(1.0:-0.1:0.0)) 0.0 "
 
 # ╔═╡ 8d568104-f105-48ab-903d-0db0dd9d006e
-begin
-	dist
-	md" distance selected= $dist "
-end
+md" distance selected= $dist "
 
 # ╔═╡ c3ef0457-712c-4d2c-a8f9-d016a2c859ac
 begin
-
-		dist
-	
 	  	n0LC=700
 
 		tLC=collect(2*pi/n0LC:2*pi/n0LC:2*pi)
@@ -574,67 +475,50 @@ begin
 		y1LC=sin.(tLC)
         z1LC=zeros(n0LC,1)
 
-        x2LC=cos.(tLC).+1;
-        y2LC=zeros(n0LC,1);
-        z2LC=sin.(tLC);
+        x2LC=cos.(tLC).+1
+        y2LC=zeros(n0LC,1)
+        z2LC=sin.(tLC)
 	
 		XLC=zeros(2*n0LC,3)
 		XLC[1:n0LC,:]=[x1LC cos(0.4)*y1LC+sin(0.4)*z1LC sin(0.4)*y1LC+cos(0.4)*z1LC]
 		XLC[n0LC+1:2*n0LC,:]=[x2LC cos(0.4)*y2LC+sin(0.4)*z2LC -sin(0.4)*y2LC+cos(0.4)*z2LC]
 
-		Plots.scatter(XLC[1:n0LC,1],XLC[1:n0LC,2]; label="cluster 1",markercolor=:blue,markersize = 3)
-		Plots.scatter!(XLC[n0LC+1:2*n0LC,1],XLC[n0LC+1:2*n0LC,2]; label="cluster 2",markercolor=:orange,markersize = 3)
-	
+		Plots.scatter(XLC[1:n0LC,1],XLC[1:n0LC,2]; label="cluster 1",markercolor=:blue,markersize=3)
+		Plots.scatter!(XLC[n0LC+1:2*n0LC,1],XLC[n0LC+1:2*n0LC,2]; label="cluster 2",markercolor=:orange,markersize=3)
 end
 
 # ╔═╡ b0c90755-2ccd-4640-8d1d-5f13482e4f16
-md" Select algorithm parameters! "
+md" Select algorithm parameters: "
 
 # ╔═╡ b87db7e5-8e76-4a66-a51f-87fcc7576358
 @bind rangeLC Radio(["λ < 1", "λ > 1"], default="λ > 1")
 
 # ╔═╡ e8e6ce64-cb4b-43e7-ad91-1ab1612b5149
-begin
-	rangeLC
-	if cmp(rangeLC,"λ > 1")==0
+if cmp(rangeLC,"λ > 1")==0
 		valuesLC=2:200
-	else
+else
 		valuesLC=0.1:0.01:0.9
-	end;
 end;
 
 # ╔═╡ a931e488-8a5d-4e7b-98a3-6d3efa77e07e
-begin
-	rangeLC
-	md"""
-	λ:
-	$(valuesLC[1]) $(@bind lambdaLC PlutoUI.Slider(valuesLC)) $(valuesLC[length(valuesLC)])
-	"""
-end
-
-# ╔═╡ e5b385f5-1e1d-4f76-ba3c-39be2d1a3454
-begin
-	lambdaLC
-	md" λ selected= $lambdaLC "
-end
-
-# ╔═╡ ee3242e8-671c-4e38-be17-0965a48b85a6
 md"""
-perplexity:
-5 $(@bind uLC PlutoUI.Slider(5:50)) 50
+λ: $(valuesLC[1]) $(@bind lambdaLC PlutoUI.Slider(valuesLC)) $(valuesLC[length(valuesLC)])
 """
 
+# ╔═╡ e5b385f5-1e1d-4f76-ba3c-39be2d1a3454
+md" λ selected= $lambdaLC "
+
+# ╔═╡ ee3242e8-671c-4e38-be17-0965a48b85a6
+md" perplexity: 5 $(@bind uLC PlutoUI.Slider(5:50)) 50 "
+
 # ╔═╡ 6522d53e-c8d4-4580-84b8-5946ac6155cd
-begin
-	uLC
-	md" perplexity selected= $uLC "
-end
+md" perplexity selected= $uLC "
 
 # ╔═╡ f200d1b3-2ded-441d-8acf-2f02f65a95f0
 begin
 	YLC = sgtsnepi(pointcloud2graph(XLC,uLC),λ=lambdaLC)
-	Plots.scatter(YLC[1:n0LC,1],YLC[1:n0LC,2];label="cluster 1", markercolor=:blue,markersize = 3)
-	Plots.scatter!(YLC[n0LC+1:2*n0LC,1],YLC[n0LC+1:2*n0LC,2];label="cluster 2", markercolor=:orange,markersize = 3)
+	Plots.scatter(YLC[1:n0LC,1],YLC[1:n0LC,2];label="cluster 1",markercolor=:blue,markersize=3)
+	Plots.scatter!(YLC[n0LC+1:2*n0LC,1],YLC[n0LC+1:2*n0LC,2];label="cluster 2",markercolor=:orange,markersize=3)
 end
 
 # ╔═╡ d399bf4b-75a7-4874-9875-4c2166c624a2
@@ -649,20 +533,15 @@ Please do not modify
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
-ColorSchemes = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
-Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SGtSNEpi = "e6c19c8d-e382-4a50-b2c6-174ddd647730"
-SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [compat]
 CairoMakie = "~0.10.4"
-ColorSchemes = "~3.20.0"
-Colors = "~0.12.10"
 Distributions = "~0.25.86"
 Makie = "~0.19.4"
 Plots = "~1.38.8"
@@ -676,7 +555,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "a554129493054945b3a2845e9647c8eaa524a02b"
+project_hash = "e3a557a09188c6ae76bc412b1f9068c7e9a92beb"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -2281,7 +2160,15 @@ version = "1.4.1+0"
 # ╔═╡ Cell order:
 # ╟─8875ccea-0431-4ca5-8489-680c6f4423a9
 # ╟─d7dec395-a448-41aa-a703-771373e5210e
+# ╟─3c7763de-50bb-4b2e-a0da-1f914e8588f3
 # ╟─ff9cbd25-8039-4ba4-bff3-1b50db8ba67b
+# ╟─ca038f17-1c7f-45f2-99be-c17e018383c5
+# ╟─c23b5156-7041-4a6f-87ee-748d64832f37
+# ╟─695421f8-3554-4879-88d2-dfdd983153f9
+# ╟─16bf61fc-8991-47df-b7e4-a2bec5cf0f73
+# ╟─1a37b98c-b66e-438f-be2d-1bfbbbf6a610
+# ╟─c440c868-90a2-4cd6-b40d-27f9550eabc2
+# ╟─94cdb882-f901-4f6f-a797-a62731e32db9
 # ╟─d558351b-1330-4817-80e3-ef30371346af
 # ╟─d3660a64-37fc-4efd-8524-c0c9dec953a6
 # ╟─bbeab555-4cd2-4dbb-be8c-32c7318f4675
@@ -2338,10 +2225,9 @@ version = "1.4.1+0"
 # ╟─1ebc940a-e911-478b-938d-848d3371f528
 # ╟─3496e66d-37aa-48de-809b-b214bc43169c
 # ╟─5a7c9ef7-da81-4ce4-acea-51a70bb94531
-# ╠═f575d6db-8d66-4827-adca-b8e9d7771842
-# ╠═11b1d129-43df-4840-aedf-70714868cc79
-# ╠═ad9ce426-8491-48b8-a550-a5e2956e90cf
-# ╟─fd4c58f3-81f5-4814-b57b-7ca309b1ff2c
+# ╟─f575d6db-8d66-4827-adca-b8e9d7771842
+# ╟─11b1d129-43df-4840-aedf-70714868cc79
+# ╟─ad9ce426-8491-48b8-a550-a5e2956e90cf
 # ╟─afd5a43e-f934-477d-a9bf-174b248dcfe6
 # ╟─2499038e-a9a3-4401-bb4c-702b3380fea0
 # ╟─3af39e67-e6f5-4e12-9f27-8f819661dded
@@ -2364,6 +2250,6 @@ version = "1.4.1+0"
 # ╟─6522d53e-c8d4-4580-84b8-5946ac6155cd
 # ╟─f200d1b3-2ded-441d-8acf-2f02f65a95f0
 # ╟─d399bf4b-75a7-4874-9875-4c2166c624a2
-# ╠═fbeb70c5-16a8-432a-8fa1-2762d097ef29
+# ╟─fbeb70c5-16a8-432a-8fa1-2762d097ef29
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

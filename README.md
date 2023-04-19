@@ -1,6 +1,6 @@
 # Pluto for SG-t-SNE
 
-Pluto for SG-t-SNE is a Pluto notebook that runs [SG-t-SNE algorithm](https://github.com/fcdimitr/sgtsnepi) from Julia giving different cases of data as inputs. It is based on the webpage [How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/).
+Pluto for SG-t-SNE is a Pluto notebook that runs [SG-t-SNE algorithm](https://github.com/fcdimitr/sgtsnepi) from Julia giving different cases of data as inputs. It is based on the webpage [How to Use t-SNE Effectively](https://distill.pub/2016/misread-tsne/). You can visit the webpage of Pluto for SG-t-SNE notebook here: [Pluto for SG-t-SNE](https://dimitravrs.github.io/Pluto-for-SG-t-SNE/simple-examples.html). It contains the notebook content without the capability of interactivity. Interactivity requires running the notebook with PlutoSliderServer as described [below](https://github.com/dimitraVrs/Pluto-for-SG-t-SNE#instructions-to-run-the-pluto-notebook-using-plutosliderserver).
 
 ### the Pluto notebook:
 The Pluto notebook simple-examples.jl runs SG-t-SNE algorithm from Julia giving different cases of data as inputs and plots output points. The notebook uses [SGtSNEpi.jl](https://fcdimitr.github.io/SGtSNEpi.jl/stable/) to run SG-t-SNE. [SGtSNEpi.jl](https://fcdimitr.github.io/SGtSNEpi.jl/stable/) is a Julia interface to SG-t-SNE.
